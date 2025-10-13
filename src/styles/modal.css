@@ -1,0 +1,22 @@
+/* src/css/modal.css */
+@import url('./variables.css');
+
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--bg);
+  color: var(--text);
+  padding: 22px;
+  border-radius: 12px;
+  width: 480px;
+  max-width: 95%;
+  box-shadow: 0 12px 36px rgba(3,9,9,0.28);
+}

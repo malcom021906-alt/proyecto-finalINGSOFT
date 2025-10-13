@@ -1,0 +1,33 @@
+/* src/css/form.css */
+@import url('./variables.css');
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+form label {
+  margin-bottom: 4px;
+  font-weight: bold;
+  color: var(--text);
+}
+
+form input {
+  margin-bottom: 12px;
+}
+
+form button {
+  margin-top: 8px;
+}
+
+.form-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}

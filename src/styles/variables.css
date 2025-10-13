@@ -1,0 +1,21 @@
+/* src/css/variables.css */
+:root {
+  --color-dark: #080f0f;
+  --color-gray: #a4bab7;
+  --color-cream: #eff2c0;
+  --color-white: #ffffff;
+  --color-khaki: #bea57d;
+
+  --font-main: 'Segoe UI', Tahoma, sans-serif;
+}
+
+/* Additional tokens */
+:root {
+  --bg: var(--color-white);
+  --card-bg: var(--color-cream);
+  --accent: var(--color-khaki);
+  --muted: #f2f2f2;
+  --text: var(--color-dark);
+  --muted-dark: #e6e6e6;
+  --shadow: 0 8px 24px rgba(8,15,15,0.18);
+}
