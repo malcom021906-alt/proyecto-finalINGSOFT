@@ -32,7 +32,7 @@ async def login(payload: LoginRequest, db: AsyncIOMotorDatabase = Depends(get_da
     if not verify_password(payload.contraseña, user.get("contraseña", "")):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Credenciales inválidas")
 
-    subject = {"sub": str(user["_id"]), "correo": user["correo"]}
+    subject = {"sub": str(user["_id"]), "correo": user["correo"],"rol": user.get("rol", "cliente")}
     token = create_access_token(subject, expires_delta=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES))
     return Token(access_token=token)
 
@@ -42,7 +42,7 @@ async def token(form: OAuth2PasswordRequestForm = Depends(), db: AsyncIOMotorDat
     user = await find_user_by_correo(db, form.username)
     if not user or not verify_password(form.password, user.get("contraseña", "")) or not user.get("activo", True):
         raise HTTPException(status_code=401, detail="Credenciales inválidas")
-    subject = {"sub": str(user["_id"]), "correo": user["correo"]}
+    subject = {"sub": str(user["_id"]), "correo": user["correo"],"rol": user.get("rol", "cliente")}
     token = create_access_token(subject)
     return Token(access_token=token)
 
@@ -65,7 +65,7 @@ async def me(authorization: str = Header(...), db: AsyncIOMotorDatabase = Depend
     except JWTError:
         raise HTTPException(status_code=401, detail="Token inválido")
 
-    user = await db["Usuario"].find_one({"_id": {"$eq": ObjectId(user_id)}})
+    user = await db["usuarios"].find_one({"_id": ObjectId(user_id)}) or await db["agentes"].find_one({"_id": ObjectId(user_id)})
     if not user:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
     return serialize_user(user)
