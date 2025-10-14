@@ -14,6 +14,7 @@ from app.services.solicitudes_cdt import (
     listar_solicitudes,
     actualizar_solicitud,
     cancelar_solicitud,
+    enviar_a_validacion,
 )
 
 router = APIRouter(prefix="/solicitudes", tags=["solicitudes CDT"])
@@ -65,9 +66,24 @@ async def actualizar_solicitud_existente(
     if not updated:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="No se puede modificar la solicitud (no encontrada o no está en borrador)",
+            detail="No se puede modificar la solicitud (no encontrada o no está en estado de borrador)",
         )
     return updated
+
+# --- Enviar solicitud a validación manualmente ---
+@router.put("/{solicitud_id}/enviar", response_model=SolicitudDB)
+async def enviar_a_validacion_manual(
+    solicitud_id: str,
+    db: AsyncIOMotorDatabase = Depends(get_database),
+    user_id: str = Depends(obtener_usuario_id),
+):
+    solicitud = await enviar_a_validacion(db, solicitud_id, user_id)
+    if not solicitud:
+        raise HTTPException(
+            status_code=400,
+            detail="Solo se pueden enviar solicitudes en estado 'borrador'."
+        )
+    return solicitud
 
 # --- Cancelar solicitud ---
 @router.delete("/{solicitud_id}", status_code=204)
