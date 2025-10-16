@@ -1,7 +1,11 @@
 import React from "react";
+import { useNavigate, Link } from "react-router-dom";
 import "../css/login.css";
 
 export default function Login() {
+
+   const navigate = useNavigate();
+
   return (
     <div className="login-container">
       {/* Lado izquierdo con logo */}
@@ -23,13 +27,16 @@ export default function Login() {
             <label>Password</label>
             <input type="password" placeholder="Enter your password" />
 
-            <a href="#" className="forgot-password">Forgot password?</a>
+            <p className="forgot-password">
+              <Link to="/forgot-password">Forgot password?</Link>
+            </p>
 
             <button type="submit" className="btn-login">Sign in</button>
 
             <p className="signup-text">
-              Don't have an account? <a href="#">Sign up</a>
+              Don't have an account? <Link to="/register">Sign up</Link>
             </p>
+
           </form>
         </div>
       </div>
