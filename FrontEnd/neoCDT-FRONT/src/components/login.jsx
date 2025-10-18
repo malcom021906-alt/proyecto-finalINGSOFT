@@ -1,34 +1,70 @@
-import React from "react";
+// src/components/login.jsx
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../context/authContext";
 import "../css/login.css";
 
 export default function Login() {
+  const navigate = useNavigate();
+  const { login, error: contextError } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [localError, setLocalError] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLocalError("");
+    setLoading(true);
+    try {
+      await login(email, password);
+      navigate("/solicitudes");
+    } catch (err) {
+      setLocalError(contextError || err?.message || "Credenciales inválidas. Verifica tu correo y contraseña.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="login-container">
-      {/* Lado izquierdo con logo */}
       <div className="login-left">
         <div className="logo">
           <div className="logo-circle"></div>
           <h1>NEO CDT</h1>
         </div>
       </div>
-
-      {/* Lado derecho con formulario */}
       <div className="login-right">
         <div className="form-container">
           <h2>Sign in</h2>
-          <form>
+          <form onSubmit={handleSubmit}>
             <label>Email</label>
-            <input type="email" placeholder="Enter your email" />
-
+            <input
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              autoComplete="username"
+            />
             <label>Password</label>
-            <input type="password" placeholder="Enter your password" />
-
-            <a href="#" className="forgot-password">Forgot password?</a>
-
-            <button type="submit" className="btn-login">Sign in</button>
-
+            <input
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              autoComplete="current-password"
+            />
+            {(localError || contextError) && <p style={{ color: "crimson", marginTop: 8 }}>{localError || contextError}</p>}
+            <p className="forgot-password">
+              <Link to="/forgot-password">Forgot password?</Link>
+            </p>
+            <button type="submit" className="btn-login" disabled={loading}>
+              {loading ? "Ingresando..." : "Sign in"}
+            </button>
             <p className="signup-text">
-              Don't have an account? <a href="#">Sign up</a>
+              Don't have an account? <Link to="/register">Sign up</Link>
             </p>
           </form>
         </div>
