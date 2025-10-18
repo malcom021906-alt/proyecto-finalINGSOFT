@@ -18,7 +18,7 @@ export default function HomeScreen() {
           segura y rápida desde una sola plataforma.
         </p>
         <button className="home-btn" onClick={() => navigate("/login")}>
-          Get Started
+          ¡Comienza Aquí!
         </button>
       </div>
 
