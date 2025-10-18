@@ -2,7 +2,7 @@
 import { useState, useCallback, useRef } from "react";
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:8000"; // Ajusta según tu configuración
+const API_BASE_URL = "http://localhost:8000";
 
 export default function useSolicitudes() {
   const [solicitudes, setSolicitudes] = useState([]);
@@ -13,12 +13,13 @@ export default function useSolicitudes() {
   const [filtros, setFiltros] = useState({});
   const limit = 10;
 
-  // Ref para evitar llamadas duplicadas
   const isLoadingRef = useRef(false);
 
-  // Agregar la barra final a la URL para evitar redirects
+  const getAuthHeaders = () => ({
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  });
+
   const fetchSolicitudes = useCallback(async (options = {}) => {
-    // Evitar llamadas duplicadas
     if (isLoadingRef.current) {
       console.log("Llamada duplicada evitada");
       return;
@@ -32,39 +33,34 @@ export default function useSolicitudes() {
       const currentPage = options.page || page;
       const currentFiltros = options.filtros || filtros;
 
-      // Construir query params
       const params = new URLSearchParams({
         page: currentPage,
         limit: limit,
       });
 
-      // Agregar filtros si existen
       if (currentFiltros.estado) params.append("estado", currentFiltros.estado);
       if (currentFiltros.desde) params.append("desde", currentFiltros.desde);
       if (currentFiltros.hasta) params.append("hasta", currentFiltros.hasta);
       if (currentFiltros.montoMin) params.append("montoMin", currentFiltros.montoMin);
       if (currentFiltros.q) params.append("q", currentFiltros.q);
 
-      // IMPORTANTE: Agregar la barra final para evitar el redirect 307
       const url = `${API_BASE_URL}/solicitudes/?${params.toString()}`;
       
       console.log("Fetching solicitudes:", url);
 
       const response = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+        headers: getAuthHeaders(),
       });
 
       console.log("Response:", response.data);
 
-      // Actualizar estado con los datos
       setSolicitudes(response.data.items || []);
       setTotal(response.data.total || 0);
 
     } catch (err) {
       console.error("Error fetching solicitudes:", err);
-      const errorMsg = err?.response?.data?.message || err.message || "Error al cargar solicitudes";
+      console.error("Error details:", err.response?.data);
+      const errorMsg = err?.response?.data?.detail || err?.response?.data?.message || err.message || "Error al cargar solicitudes";
       setError(errorMsg);
       setSolicitudes([]);
       setTotal(0);
@@ -74,75 +70,102 @@ export default function useSolicitudes() {
     }
   }, [page, filtros, limit]);
 
-  // Crear solicitud
   const createSolicitud = useCallback(async (solicitud) => {
     try {
+      console.log("Creating solicitud with data:", solicitud);
+      
+      // Asegurarse de que los datos tengan el formato correcto
+      const payload = {
+        monto: parseInt(solicitud.monto),
+        plazo_meses: parseInt(solicitud.plazo_meses),
+      };
+      
+      console.log("Payload to send:", payload);
+      
       const response = await axios.post(
-        `${API_BASE_URL}/solicitudes/`, // Con barra final
-        solicitud,
+        `${API_BASE_URL}/solicitudes/`,
+        payload,
         {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+          headers: getAuthHeaders(),
         }
       );
+      
+      console.log("Created successfully:", response.data);
       return response.data;
     } catch (err) {
       console.error("Error creating solicitud:", err);
+      console.error("Error response:", err.response?.data);
       throw err;
     }
   }, []);
 
-  // Actualizar solicitud
   const updateSolicitud = useCallback(async (id, solicitud) => {
     try {
+      console.log("Updating solicitud:", id, solicitud);
+      
+      const payload = {
+        monto: parseInt(solicitud.monto),
+        plazo_meses: parseInt(solicitud.plazo_meses),
+      };
+      
+      console.log("Update payload:", payload);
+      
       const response = await axios.put(
-        `${API_BASE_URL}/solicitudes/${id}`, // Sin barra final para este caso
-        solicitud,
+        `${API_BASE_URL}/solicitudes/${id}`,
+        payload,
         {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+          headers: getAuthHeaders(),
         }
       );
+      
+      console.log("Updated successfully:", response.data);
       return response.data;
     } catch (err) {
       console.error("Error updating solicitud:", err);
+      console.error("Error response:", err.response?.data);
       throw err;
     }
   }, []);
 
-  // Cambiar estado
   const changeEstado = useCallback(async (id, nuevoEstado, razon = undefined) => {
     try {
+      console.log("Changing state:", id, nuevoEstado, razon);
+      
+      const params = new URLSearchParams({ estado: nuevoEstado });
+      if (razon) {
+        params.append("razon", razon);
+      }
+      
       const response = await axios.patch(
-        `${API_BASE_URL}/solicitudes/${id}/estado`,
-        { estado: nuevoEstado, razon },
+        `${API_BASE_URL}/solicitudes/${id}/estado?${params.toString()}`,
+        {},
         {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+          headers: getAuthHeaders(),
         }
       );
+      
+      console.log("State changed successfully:", response.data);
       return response.data;
     } catch (err) {
       console.error("Error changing estado:", err);
+      console.error("Error response:", err.response?.data);
       throw err;
     }
   }, []);
 
-  // Eliminar solicitud (lógico)
   const deleteSolicitud = useCallback(async (id) => {
     try {
+      console.log("Deleting solicitud:", id);
+      
       await axios.delete(`${API_BASE_URL}/solicitudes/${id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+        headers: getAuthHeaders(),
       });
-      // Refrescar lista después de eliminar
+      
+      console.log("Deleted successfully");
       await fetchSolicitudes();
     } catch (err) {
       console.error("Error deleting solicitud:", err);
+      console.error("Error response:", err.response?.data);
       throw err;
     }
   }, [fetchSolicitudes]);
