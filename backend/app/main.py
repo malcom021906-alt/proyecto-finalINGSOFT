@@ -6,11 +6,13 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from .core.config import settings
 from .core.database import get_client
 from .api.auth import router as auth_router
+from .api.solicitudes_cdt import router as solicitudes_cdt_router
+from .api.solicitudes_cdt_agente import router as solicitudes_agente_router
 
 app = FastAPI(
     title="NeoCDT Bank API",
     version="1.0.0",
-    description="API para autenticación y gestión de usuarios de NeoCDT Bank.",
+    description="API para gestión de NeoCDT Bank.",
 )
 
 # CORS
@@ -24,6 +26,8 @@ app.add_middleware(
 
 # Routers
 app.include_router(auth_router)
+app.include_router(solicitudes_cdt_router)
+app.include_router(solicitudes_agente_router)
 
 # Eventos
 @app.on_event("startup")

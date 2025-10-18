@@ -25,14 +25,29 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
     return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
 async def find_user_by_correo(db: AsyncIOMotorDatabase, correo: str) -> Optional[dict]:
-    return await db["usuarios"].find_one({"correo": correo})
+    # Busca primero en 'usuarios'
+    user = await db["usuarios"].find_one({"correo": correo})
+    if user:
+        user["rol"] = "cliente"
+        user["tipo_coleccion"] = "usuarios"
+        return user
+
+    # Si no está en usuarios, busca en 'agentes'
+    agent = await db["agentes"].find_one({"correo": correo})
+    if agent:
+        agent["rol"] = agent.get("rol", "agente")
+        agent["tipo_coleccion"] = "agentes"
+        return agent
+
+    return None
 
 def serialize_user(doc: dict) -> dict:
     return {
         "id": str(doc.get("_id")),
         "nombre": doc.get("nombre"),
         "correo": doc.get("correo"),
-        "telefono": doc.get("telefono"),
+        "telefono": doc.get("telefono") if "telefono" in doc else None,
+        "rol": doc.get("rol", "cliente"),
         "activo": bool(doc.get("activo", True)),
     }
 

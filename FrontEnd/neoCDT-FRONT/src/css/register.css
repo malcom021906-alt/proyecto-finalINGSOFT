@@ -1,0 +1,92 @@
+:root {
+  --night: #080f0f;
+  --ash-gray: #a4bab7;
+  --cream: #eff2c0;
+  --white: #ffffff;
+  --khaki: #bea57d;
+}
+
+.register-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* Sección izquierda */
+.register-left {
+  flex: 1;
+  background-color: var(--night);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: var(--white);
+}
+
+.register-left h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-top: 1rem;
+}
+
+.circle {
+  width: 60px;
+  height: 60px;
+  background-color: var(--ash-gray);
+  border-radius: 50%;
+}
+
+/* Sección derecha */
+.register-right {
+  flex: 1;
+  background-color: var(--white);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.register-box {
+  width: 80%;
+  max-width: 400px;
+  text-align: left;
+}
+
+.register-box h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--night);
+}
+
+label {
+  display: block;
+  margin-top: 1rem;
+  font-weight: 600;
+  color: var(--night);
+}
+
+input {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid var(--night);
+  border-radius: 5px;
+  margin-top: 0.3rem;
+  font-size: 1rem;
+}
+
+.register-btn {
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--khaki);
+  color: var(--night);
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.register-btn:hover {
+  transform: scale(1.03);
+}
