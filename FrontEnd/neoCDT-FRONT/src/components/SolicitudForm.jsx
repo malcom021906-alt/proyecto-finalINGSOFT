@@ -1,22 +1,12 @@
 // src/components/SolicitudForm.jsx
 import React, { useState, useEffect } from "react";
 
-/*
-  SolicitudForm:
-  Props:
-    - initialData: objeto con datos iniciales (para editar). Si es null => modo creación.
-    - onSubmit(solicitud): callback cuando el formulario se envía correctamente.
-    - onCancel(): callback cuando se cancela la acción.
-*/
-
 export default function SolicitudForm({ initialData = null, onSubmit, onCancel, submitting = false }) {
-  // Estados controlados para cada campo del formulario
   const [monto, setMonto] = useState("");
   const [plazo, setPlazo] = useState("");
   const [tasaInteres, setTasaInteres] = useState("");
   const [error, setError] = useState(null);
 
-  // Al montar, si hay datos iniciales => modo edición: rellenar inputs
   useEffect(() => {
     if (initialData) {
       setMonto(initialData.monto || "");
@@ -25,21 +15,19 @@ export default function SolicitudForm({ initialData = null, onSubmit, onCancel, 
     }
   }, [initialData]);
 
-  // Validaciones de los campos antes de enviar
   const validate = () => {
     if (!monto || Number(monto) < 10000) {
-      return "Monto mínimo es 10000";
+      return "Monto mínimo es 10,000 COP";
     }
     if (!plazo || plazo <= 0) {
-      return "El plazo debe ser mayor a 0";
+      return "El plazo debe ser mayor a 0 días";
     }
     if (tasaInteres < 0) {
       return "La tasa de interés no puede ser negativa";
     }
-    return null; // si no hay errores
+    return null;
   };
 
-  // Manejo del submit
   const handleSubmit = (e) => {
     e.preventDefault();
     const validationError = validate();
@@ -48,76 +36,86 @@ export default function SolicitudForm({ initialData = null, onSubmit, onCancel, 
       return;
     }
 
-    // Construimos el objeto solicitud con los valores del form
     const solicitud = {
       monto: Number(monto),
       plazo: Number(plazo),
       tasaInteres: Number(tasaInteres),
-      estado: initialData?.estado || "En validación", // por defecto al crear -> En validación según HU-03
+      estado: initialData?.estado || "En validación",
     };
 
-    // Llamamos al callback que viene desde la página
     onSubmit?.(solicitud);
 
-    // Reiniciamos el form solo si es creación
     if (!initialData) {
       setMonto("");
       setPlazo("");
       setTasaInteres("");
+      setError(null);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ padding: 16, border: "1px solid #ccc", borderRadius: 8 }}>
-      <h3>{initialData ? "Editar Solicitud" : "Nueva Solicitud"}</h3>
+    <form onSubmit={handleSubmit}>
+      {/* Mensaje de error */}
+      {error && <div className="form-error">{error}</div>}
 
       {/* Monto */}
-      <div style={{ marginBottom: 12 }}>
-        <label>Monto (COP):</label>
+      <div className="form-group">
+        <label className="required">Monto (COP)</label>
         <input
           type="number"
           value={monto}
-          onChange={(e) => setMonto(e.target.value)}
-          placeholder="Ingrese monto"
-          style={{ marginLeft: 8 }}
+          onChange={(e) => {
+            setMonto(e.target.value);
+            setError(null);
+          }}
+          placeholder="Ej: 50000000"
+          className={error && !monto ? "error" : ""}
         />
+        <div className="form-helper">Monto mínimo: $10,000 COP</div>
       </div>
 
       {/* Plazo */}
-      <div style={{ marginBottom: 12 }}>
-        <label>Plazo (días):</label>
+      <div className="form-group">
+        <label className="required">Plazo (días)</label>
         <input
           type="number"
           value={plazo}
-          onChange={(e) => setPlazo(e.target.value)}
-          placeholder="Ejemplo: 30"
-          style={{ marginLeft: 8 }}
+          onChange={(e) => {
+            setPlazo(e.target.value);
+            setError(null);
+          }}
+          placeholder="Ej: 30"
+          className={error && !plazo ? "error" : ""}
         />
+        <div className="form-helper">Plazo en días para el CDT</div>
       </div>
 
       {/* Tasa */}
-      <div style={{ marginBottom: 12 }}>
-        <label>Tasa de Interés (%):</label>
+      <div className="form-group">
+        <label className="required">Tasa de Interés (%)</label>
         <input
           type="number"
           step="0.01"
           value={tasaInteres}
-          onChange={(e) => setTasaInteres(e.target.value)}
-          placeholder="Ejemplo: 7.5"
-          style={{ marginLeft: 8 }}
+          onChange={(e) => {
+            setTasaInteres(e.target.value);
+            setError(null);
+          }}
+          placeholder="Ej: 7.5"
+          className={error && !tasaInteres ? "error" : ""}
         />
+        <div className="form-helper">Tasa de interés anual efectiva</div>
       </div>
 
-      {/* Mensaje de error si la validación falla */}
-      {error && <div style={{ color: "red", marginBottom: 12 }}>{error}</div>}
-
       {/* Botones de acción */}
-      <button type="submit" style={{ marginRight: 8 }} disabled={submitting}>
-        {submitting ? "Enviando..." : initialData ? "Guardar cambios" : "Crear"}
-      </button>
-      <button type="button" onClick={onCancel} disabled={submitting}>
-        Cancelar
-      </button>
+      <div className="form-actions">
+        <button type="submit" disabled={submitting}>
+          {submitting ? "Enviando..." : initialData ? "Guardar cambios" : "Crear solicitud"}
+        </button>
+        <button type="button" onClick={onCancel} disabled={submitting}>
+          Cancelar
+        </button>
+      </div>
     </form>
   );
 }

@@ -1,21 +1,48 @@
 /* src/css/variables.css */
 :root {
-  --color-dark: #080f0f;
-  --color-gray: #a4bab7;
-  --color-cream: #eff2c0;
-  --color-white: #ffffff;
-  --color-khaki: #bea57d;
-
-  --font-main: 'Segoe UI', Tahoma, sans-serif;
+  /* Colors inspired by login design */
+  --bg: #f8f9fa;
+  --bg-secondary: #ffffff;
+  --text: #1a1a1a;
+  --text-secondary: #6c757d;
+  --accent: #c9a87c;
+  --accent-hover: #b89464;
+  --muted: #f1f3f5;
+  --muted-dark: #e9ecef;
+  --border: #dee2e6;
+  --error: #dc3545;
+  --success: #28a745;
+  --warning: #ffc107;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 12px 36px rgba(0, 0, 0, 0.12);
+  
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 20px;
+  --spacing-xl: 32px;
+  
+  /* Border radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  
+  /* Typography */
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+  --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
 }
 
-/* Additional tokens */
-:root {
-  --bg: var(--color-white);
-  --card-bg: var(--color-cream);
-  --accent: var(--color-khaki);
-  --muted: #f2f2f2;
-  --text: var(--color-dark);
-  --muted-dark: #e6e6e6;
-  --shadow: 0 8px 24px rgba(8,15,15,0.18);
+/* Dark theme support (optional) */
+[data-theme="dark"] {
+  --bg: #1a1d21;
+  --bg-secondary: #2d3139;
+  --text: #f8f9fa;
+  --text-secondary: #adb5bd;
+  --muted: #343a40;
+  --muted-dark: #495057;
+  --border: #495057;
 }

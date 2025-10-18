@@ -5,31 +5,97 @@ table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  margin-top: 12px;
+  margin-top: var(--spacing-lg);
   color: var(--text);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   overflow: hidden;
+  background-color: var(--bg-secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+thead {
+  background: linear-gradient(180deg, #f8f9fa 0%, #f1f3f5 100%);
 }
 
 th {
-  background-color: var(--muted);
-  padding: 14px 12px;
+  padding: 16px 14px;
   text-align: left;
   font-weight: 700;
-  font-size: 13px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+  border-bottom: 2px solid var(--border);
 }
 
 td {
-  padding: 12px;
-  border-top: 1px solid var(--muted-dark);
+  padding: 14px;
+  border-bottom: 1px solid var(--muted-dark);
+  font-size: 14px;
+  color: var(--text);
 }
 
-tr:nth-child(even) {
+tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+tbody tr:hover {
   background-color: var(--muted);
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
 }
 
 .table-empty {
   text-align: center;
-  padding: 28px 0;
-  color: #777;
+  padding: 48px 0;
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+
+/* Action buttons in table */
+td button {
+  padding: 6px 12px;
+  font-size: 13px;
+  margin-right: var(--spacing-sm);
+}
+
+td button:last-child {
+  margin-right: 0;
+}
+
+/* Status badges */
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-borrador {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.status-validacion {
+  background-color: #fff3e0;
+  color: #f57c00;
+}
+
+.status-aprobada {
+  background-color: #e8f5e9;
+  color: #388e3c;
+}
+
+.status-rechazada {
+  background-color: #ffebee;
+  color: #d32f2f;
+}
+
+.status-cancelada {
+  background-color: #f5f5f5;
+  color: #616161;
 }
