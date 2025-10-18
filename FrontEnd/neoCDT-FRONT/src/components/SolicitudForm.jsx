@@ -1,4 +1,4 @@
-// src/components/SolicitudForm.jsx
+// src/components/SolicitudForm.jsx s
 import React, { useState, useEffect } from "react";
 
 export default function SolicitudForm({ initialData, onSubmit, submitting, onCancel }) {

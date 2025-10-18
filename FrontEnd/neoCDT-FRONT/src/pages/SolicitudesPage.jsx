@@ -1,4 +1,4 @@
-// src/pages/SolicitudesPage.jsx
+// src/pages/SolicitudesPage.jsx s
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useSolicitudes from "../hooks/useSolicitudes";

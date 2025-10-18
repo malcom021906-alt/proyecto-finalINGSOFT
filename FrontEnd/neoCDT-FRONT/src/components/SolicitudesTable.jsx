@@ -1,4 +1,4 @@
-// src/components/SolicitudesTable.jsx
+// src/components/SolicitudesTable.jsx s
 import React from "react";
 
 export default function SolicitudesTable({ items, onEdit, onChangeState }) {
