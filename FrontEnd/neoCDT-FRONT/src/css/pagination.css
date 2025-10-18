@@ -1,0 +1,45 @@
+/* src/css/pagination.css */
+@import url('./variables.css');
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xl);
+  padding: var(--spacing-lg);
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+.pagination button {
+  min-width: 100px;
+}
+
+.pagination-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  font-size: 14px;
+  color: var(--text);
+}
+
+.pagination-current {
+  font-weight: 600;
+  color: var(--text);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--muted);
+  border-radius: var(--radius-sm);
+}
+
+.pagination-total {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+/* Disabled state */
+.pagination button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
