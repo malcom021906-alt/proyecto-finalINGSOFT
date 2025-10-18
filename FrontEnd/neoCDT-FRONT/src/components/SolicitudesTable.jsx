@@ -1,7 +1,7 @@
 // src/components/SolicitudesTable.jsx
 import React from "react";
 
-export default function SolicitudesTable({ items, onEdit, onChangeState, onDelete }) {
+export default function SolicitudesTable({ items, onEdit, onChangeState }) {
   const formatMonto = (monto) => {
     return new Intl.NumberFormat('es-CO', {
       style: 'currency',
@@ -147,7 +147,7 @@ export default function SolicitudesTable({ items, onEdit, onChangeState, onDelet
                         style={{
                           padding: '6px 12px',
                           fontSize: '0.85rem',
-                          background: '#6b7280',
+                          background: '#ff0101ff',
                           color: 'white',
                           border: 'none',
                           borderRadius: '4px',
@@ -155,25 +155,6 @@ export default function SolicitudesTable({ items, onEdit, onChangeState, onDelet
                         }}
                       >
                         Cancelar
-                      </button>
-                    )}
-                    
-                    {acciones.puedeEliminar && (
-                      <button
-                        onClick={() => onDelete(item.id)}
-                        className="btn-action btn-delete"
-                        title="Eliminar"
-                        style={{
-                          padding: '6px 12px',
-                          fontSize: '0.85rem',
-                          background: '#dc2626',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '4px',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        Eliminar
                       </button>
                     )}
                   </div>
