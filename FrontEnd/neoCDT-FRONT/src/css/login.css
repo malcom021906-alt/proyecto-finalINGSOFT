@@ -98,15 +98,6 @@ input::placeholder {
   text-decoration: underline;
 }
 
-.forgot-password a {
-  color: var(--khaki);
-  text-decoration: none;
-}
-
-.forgot-password a:hover {
-  text-decoration: underline;
-}
-
 /* Botón */
 .btn-login {
   width: 100%;
