@@ -213,39 +213,79 @@ async def cambiar_estado_solicitud(
     return serialize_solicitud_normalizada(solicitud_actualizada)
 
 # --- Eliminar solicitud (lógico) ---
-@router.delete("/{solicitud_id}", status_code=204)
+# --- Eliminar solicitud (lógico) - CORREGIDO ---
+@router.delete("/{solicitud_id}")
 async def eliminar_solicitud(
     solicitud_id: str,
     db: AsyncIOMotorDatabase = Depends(get_database),
     user_id: str = Depends(obtener_usuario_id),
 ):
+    """
+    Elimina lógicamente una solicitud (marca como eliminada).
+    Retorna la solicitud actualizada.
+    """
     from bson import ObjectId
     from datetime import datetime, timezone
     
+    print(f"🗑️ DELETE endpoint called for solicitud_id: {solicitud_id}, user_id: {user_id}")
+    
+    try:
+        # Convertir a ObjectId
+        solicitud_obj_id = ObjectId(solicitud_id)
+    except Exception as e:
+        print(f"❌ Invalid ObjectId format: {solicitud_id}")
+        raise HTTPException(status_code=400, detail="ID de solicitud inválido")
+    
     # Verificar que la solicitud pertenece al usuario
     solicitud = await db["solicitudes_cdt"].find_one({
-        "_id": ObjectId(solicitud_id),
+        "_id": solicitud_obj_id,
         "usuario_id": ObjectId(user_id)
     })
     
     if not solicitud:
+        print(f"❌ Solicitud not found: {solicitud_id}")
         raise HTTPException(status_code=404, detail="Solicitud no encontrada")
     
-    # Eliminación lógica
-    await db["solicitudes_cdt"].update_one(
-        {"_id": ObjectId(solicitud_id)},
-        {"$set": {
+    try:
+        # Eliminación lógica
+        update_data = {
             "eliminada": True,
             "fechaEliminacion": datetime.now(timezone.utc)
-        }}
-    )
-
+        }
+        
+        result = await db["solicitudes_cdt"].update_one(
+            {"_id": solicitud_obj_id},
+            {"$set": update_data}
+        )
+        
+        print(f"✅ Deletion successful. Modified count: {result.modified_count}")
+        
+        # Obtener y devolver la solicitud actualizada
+        solicitud_actualizada = await db["solicitudes_cdt"].find_one({
+            "_id": solicitud_obj_id
+        })
+        
+        return {
+            "success": True,
+            "message": "Solicitud eliminada correctamente",
+            "id": solicitud_id,
+            "data": serialize_solicitud_normalizada(solicitud_actualizada)
+        }
+        
+    except Exception as e:
+        print(f"❌ Error during deletion: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error al eliminar la solicitud: {str(e)}"
+        )
 # --- Serializador normalizado para el frontend ---
 def serialize_solicitud_normalizada(doc: dict) -> dict:
     """
     Serializa una solicitud con estados en formato capitalizado
     para coincidir con el frontend
     """
+    from datetime import datetime
+    
     estado_map = {
         "borrador": "Borrador",
         "en_validacion": "En validación",
@@ -254,14 +294,22 @@ def serialize_solicitud_normalizada(doc: dict) -> dict:
         "cancelada": "Cancelada"
     }
     
+    # Función auxiliar para formatear fechas
+    def format_fecha(fecha):
+        if fecha is None:
+            return None
+        if isinstance(fecha, datetime):
+            return fecha.isoformat()
+        return str(fecha)
+    
     return {
         "id": str(doc["_id"]),
         "usuario_id": str(doc["usuario_id"]),
-        "monto": doc["monto"],
-        "plazo_meses": doc["plazo_meses"],
-        "tasa": doc["tasa"],
-        "estado": estado_map.get(doc["estado"], doc["estado"]),
-        "fechaCreacion": doc["fechaCreacion"].isoformat() if doc.get("fechaCreacion") else None,
-        "fechaActualizacion": doc["fechaActualizacion"].isoformat() if doc.get("fechaActualizacion") else None,
+        "monto": int(doc.get("monto", 0)),
+        "plazo_meses": int(doc.get("plazo_meses", 0)),
+        "tasa": float(doc.get("tasa", 0.0)),
+        "estado": estado_map.get(doc.get("estado", "").lower(), doc.get("estado", "Desconocido")),
+        "fechaCreacion": format_fecha(doc.get("fechaCreacion")),
+        "fechaActualizacion": format_fecha(doc.get("fechaActualizacion")),
         "razon_cancelacion": doc.get("razon_cancelacion"),
     }
