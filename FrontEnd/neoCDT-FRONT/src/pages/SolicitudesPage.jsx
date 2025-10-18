@@ -1,5 +1,6 @@
 // src/pages/SolicitudesPage.jsx
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import useSolicitudes from "../hooks/useSolicitudes";
 import FilterBar from "../components/FilterBar";
 import SolicitudesTable from "../components/SolicitudesTable";
@@ -7,10 +8,9 @@ import SolicitudForm from "../components/SolicitudForm";
 import Modal from "../components/Modal";
 
 export default function SolicitudesPage() {
+  const navigate = useNavigate();
   const {
     solicitudes,
-    cargando,
-    error,
     total,
     page,
     limit,
@@ -32,6 +32,13 @@ export default function SolicitudesPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleLogout = () => {
+    if (confirm("¿Deseas cerrar sesión?")) {
+      localStorage.removeItem("token");
+      navigate("/login");
+    }
+  };
+
   const handleApplyFilters = (filtros) => {
     setFiltros(filtros);
     fetchSolicitudes({ filtros, page: 1 });
@@ -52,7 +59,7 @@ export default function SolicitudesPage() {
       let razon = undefined;
       if (newState === "Cancelada") {
         razon = prompt("Indica el motivo de la cancelación:");
-        if (!razon) return; // Si cancela el prompt, no continuar
+        if (!razon) return;
       }
       await changeEstado(id, newState, razon);
       await fetchSolicitudes();
@@ -103,7 +110,26 @@ export default function SolicitudesPage() {
     <div className="app-container">
       <div className="page-card">
         <div className="content-inner">
-          <h2 className="page-header">MIS SOLICITUDES CDT</h2>
+          {/* Header con título y botón de cerrar sesión */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+            <h2 className="page-header" style={{ margin: 0 }}>MIS SOLICITUDES CDT</h2>
+            <button
+              onClick={handleLogout}
+              style={{
+                backgroundColor: '#dc3545',
+                color: 'white',
+                padding: '0.5rem 1rem',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '0.9rem'
+              }}
+              onMouseOver={(e) => e.target.style.backgroundColor = '#c82333'}
+              onMouseOut={(e) => e.target.style.backgroundColor = '#dc3545'}
+            >
+              Cerrar Sesión
+            </button>
+          </div>
 
           {/* Botón Nueva Solicitud */}
           <button
@@ -139,10 +165,6 @@ export default function SolicitudesPage() {
 
           {/* Barra de filtros */}
           <FilterBar onApply={handleApplyFilters} />
-
-          {/* Estado de carga y errores */}
-          {cargando && <div className="text-muted">Cargando solicitudes...</div>}
-          {error && <div className="text-error">Error: {error}</div>}
 
           {/* Tabla de solicitudes */}
           <SolicitudesTable
