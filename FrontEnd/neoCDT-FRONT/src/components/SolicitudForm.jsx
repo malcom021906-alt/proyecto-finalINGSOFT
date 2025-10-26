@@ -1,5 +1,6 @@
 // src/components/SolicitudForm.jsx s
 import React, { useState, useEffect } from "react";
+import "../css/form.css"
 
 export default function SolicitudForm({ initialData, onSubmit, submitting, onCancel }) {
   const [formData, setFormData] = useState({

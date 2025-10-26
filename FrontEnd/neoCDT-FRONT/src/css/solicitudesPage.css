@@ -1,0 +1,416 @@
+/* ======== PALETA DE COLORES ======== */
+.app-container {
+  --night: #1a2e2e;
+  --sidebar-dark: #1a2e2e;
+  --ash-gray: #A4BAB7;
+  --cream: #f5f3ed;
+  --white: #FFFFFF;
+  --khaki: #c9a961;
+  --khaki-hover: #b8984d;
+}
+
+/* ======== RESET Y BASE ======== */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ======== CONTENEDOR GENERAL ======== */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: var(--cream);
+  font-family: "Segoe UI", sans-serif;
+  color: var(--night);
+}
+
+/* ======== TARJETA PRINCIPAL ======== */
+.page-card {
+  background-color: var(--cream);
+  flex: 1;
+  padding: 2.5rem 3rem;
+  overflow-y: auto;
+}
+
+.content-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ======== ENCABEZADO ======== */
+.page-header {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--night);
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+button {
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+/* ======== BOTÓN CERRAR SESIÓN ======== */
+button.logout-btn {
+  background-color: var(--khaki);
+  color: var(--night);
+  border: none;
+  border-radius: 6px;
+  padding: 0.65rem 1.3rem;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+button.logout-btn:hover {
+  background-color: var(--khaki-hover);
+  transform: translateY(-1px);
+}
+
+/* ======== NUEVA SOLICITUD ======== */
+.mb-lg {
+  background-color: var(--khaki);
+  color: var(--night);
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.mb-lg:hover {
+  background-color: var(--khaki-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* ======== FILTROS ======== */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.8rem;
+  background-color: var(--white);
+  padding: 1.2rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.filter-bar select,
+.filter-bar input {
+  padding: 0.65rem 0.9rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  outline: none;
+  font-size: 0.9rem;
+  color: var(--night);
+  background-color: var(--white);
+}
+
+.filter-bar select:focus,
+.filter-bar input:focus {
+  border-color: var(--khaki);
+  box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.1);
+}
+
+.filter-bar button {
+  background-color: var(--night);
+  color: var(--white);
+  border: none;
+  border-radius: 6px;
+  padding: 0.65rem 1.3rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.filter-bar button:hover {
+  background-color: #2d4444;
+}
+
+/* ======== TABLA ======== */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: var(--white);
+  font-size: 0.9rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin: 0;
+}
+
+thead {
+  margin: 0;
+  padding: 0;
+}
+
+th,
+td {
+  padding: 1rem 1.2rem;
+  text-align: left;
+  margin: 0;
+}
+
+th {
+  background-color: var(--night);
+  color: var(--white);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: none;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+td {
+  border-bottom: 1px solid #e5e7eb;
+  color: var(--night);
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tbody tr:hover {
+  background-color: #fafaf9;
+}
+
+/* ======== ESTADOS ======== */
+.estado {
+  display: inline-block;
+  padding: 0.35rem 0.9rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: capitalize;
+}
+
+.estado.Borrador {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.estado.Cancelada {
+  background-color: #f3f4f6;
+  color: #6b7280;
+}
+
+.estado.Enviada {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.estado.Aprobada {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+/* ======== BOTONES DE ACCIÓN ======== */
+.btn-editar {
+  background-color: var(--khaki);
+  color: var(--night);
+  border: none;
+  border-radius: 5px;
+  padding: 0.45rem 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 0.4rem;
+  font-size: 0.85rem;
+}
+
+.btn-editar:hover {
+  background-color: var(--khaki-hover);
+}
+
+.btn-enviar {
+  background-color: #3b82f6;
+  color: var(--white);
+  border: none;
+  border-radius: 5px;
+  padding: 0.45rem 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 0.4rem;
+  font-size: 0.85rem;
+}
+
+.btn-enviar:hover {
+  background-color: #2563eb;
+}
+
+.btn-cancelar {
+  background-color: #ef4444;
+  color: var(--white);
+  border: none;
+  border-radius: 5px;
+  padding: 0.45rem 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.btn-cancelar:hover {
+  background-color: #dc2626;
+}
+
+.btn-eliminar {
+  background-color: #6b7280;
+  color: var(--white);
+  border: none;
+  border-radius: 5px;
+  padding: 0.45rem 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.85rem;
+  margin-left: 0.4rem;
+}
+
+.btn-eliminar:hover {
+  background-color: #4b5563;
+}
+
+/* ======== PAGINACIÓN ======== */
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: var(--white);
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.pagination button {
+  background-color: var(--khaki);
+  color: var(--night);
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: var(--khaki-hover);
+  transform: translateY(-1px);
+}
+
+.pagination button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.pagination-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.pagination-current {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--night);
+}
+
+.pagination-total {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+/* ======== MENSAJES DE CARGA ======== */
+.app-container p {
+  color: var(--night);
+  font-size: 1rem;
+  text-align: center;
+  padding: 2rem;
+}
+
+/* ======== RESPONSIVO ======== */
+@media (max-width: 1024px) {
+  .page-card {
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-card {
+    padding: 1.5rem 1rem;
+  }
+
+  .page-header {
+    font-size: 1.5rem;
+  }
+
+  th,
+  td {
+    font-size: 0.85rem;
+    padding: 0.8rem 0.8rem;
+  }
+
+  .pagination {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .pagination button {
+    width: 100%;
+  }
+
+  .filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-bar select,
+  .filter-bar input,
+  .filter-bar button {
+    width: 100%;
+  }
+
+  table {
+    font-size: 0.8rem;
+  }
+
+  .btn-editar,
+  .btn-enviar,
+  .btn-cancelar,
+  .btn-eliminar {
+    padding: 0.4rem 0.7rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .content-inner {
+    gap: 1rem;
+  }
+
+  .page-header {
+    font-size: 1.3rem;
+  }
+
+  th,
+  td {
+    padding: 0.6rem;
+    font-size: 0.8rem;
+  }
+}

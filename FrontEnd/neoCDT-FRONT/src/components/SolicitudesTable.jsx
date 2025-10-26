@@ -1,5 +1,6 @@
 // src/components/SolicitudesTable.jsx s
 import React from "react";
+import "../css/table.css"
 
 export default function SolicitudesTable({ items, onEdit, onChangeState }) {
   const formatMonto = (monto) => {

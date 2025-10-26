@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route} from "react-router-dom";
 
 import HomeScreen from "./components/homescreen";
 import Login from "./components/login";
@@ -8,30 +8,25 @@ import ForgotPassword from "./components/forgotPassword";
 import SolicitudesPage from "./pages/SolicitudesPage";
 import ProtectedRoute from "./router/protectedroute";
 
-import "./css/global.css";
-import "./css/table.css";
-import "./css/form.css";
-import "./css/modal.css";
-import "./css/filterbar.css";
+
 
 export default function App() {
   return (
     <Routes>
-      {/* Redirige la raíz según sesión */}
-      <Route path="/" element={<Navigate to="/solicitudes" replace />} />
+      {/* Redirige la raíz a HomeScreen */}
+      <Route path="/" element={<HomeScreen />} />,
 
-      {/* Públicas */}
+      {/* Rutas públicas */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
 
-      {/* Privadas */}
+      {/* Rutas privadas */}
       <Route element={<ProtectedRoute />}>
         <Route path="/solicitudes" element={<SolicitudesPage />} />
-        <Route path="/home" element={<HomeScreen />} />
       </Route>
 
-      {/* 404 */}
+      {/* Página no encontrada */}
       <Route path="*" element={<div style={{ padding: 24 }}>404</div>} />
     </Routes>
   );
