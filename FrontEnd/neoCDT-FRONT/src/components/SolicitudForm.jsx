@@ -1,13 +1,6 @@
 // src/components/SolicitudForm.jsx
 import React, { useState, useEffect } from "react";
 
-<<<<<<< HEAD
-export default function SolicitudForm({ initialData = null, onSubmit, onCancel, submitting = false }) {
-  const [monto, setMonto] = useState("");
-  const [plazo, setPlazo] = useState("");
-  const [tasaInteres, setTasaInteres] = useState("");
-  const [error, setError] = useState(null);
-=======
 export default function SolicitudForm({ initialData, onSubmit, submitting, onCancel }) {
   const [formData, setFormData] = useState({
     monto: "",
@@ -15,7 +8,6 @@ export default function SolicitudForm({ initialData, onSubmit, submitting, onCan
   });
 
   const [errors, setErrors] = useState({});
->>>>>>> 32565a7ac88048d5b222d8e75467d2c6482562f3
 
   useEffect(() => {
     if (initialData) {
@@ -27,18 +19,6 @@ export default function SolicitudForm({ initialData, onSubmit, submitting, onCan
   }, [initialData]);
 
   const validate = () => {
-<<<<<<< HEAD
-    if (!monto || Number(monto) < 10000) {
-      return "Monto mínimo es 10,000 COP";
-    }
-    if (!plazo || plazo <= 0) {
-      return "El plazo debe ser mayor a 0 días";
-    }
-    if (tasaInteres < 0) {
-      return "La tasa de interés no puede ser negativa";
-    }
-    return null;
-=======
     const newErrors = {};
 
     // Validar monto
@@ -61,7 +41,6 @@ export default function SolicitudForm({ initialData, onSubmit, submitting, onCan
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
->>>>>>> 32565a7ac88048d5b222d8e75467d2c6482562f3
   };
 
   const handleSubmit = (e) => {
@@ -71,22 +50,6 @@ export default function SolicitudForm({ initialData, onSubmit, submitting, onCan
       return;
     }
 
-<<<<<<< HEAD
-    const solicitud = {
-      monto: Number(monto),
-      plazo: Number(plazo),
-      tasaInteres: Number(tasaInteres),
-      estado: initialData?.estado || "En validación",
-    };
-
-    onSubmit?.(solicitud);
-
-    if (!initialData) {
-      setMonto("");
-      setPlazo("");
-      setTasaInteres("");
-      setError(null);
-=======
     // Enviar datos con números parseados
     onSubmit({
       monto: parseInt(formData.monto),
@@ -106,75 +69,10 @@ export default function SolicitudForm({ initialData, onSubmit, submitting, onCan
         ...prev,
         [name]: undefined
       }));
->>>>>>> 32565a7ac88048d5b222d8e75467d2c6482562f3
     }
   };
 
   return (
-<<<<<<< HEAD
-    <form onSubmit={handleSubmit}>
-      {/* Mensaje de error */}
-      {error && <div className="form-error">{error}</div>}
-
-      {/* Monto */}
-      <div className="form-group">
-        <label className="required">Monto (COP)</label>
-        <input
-          type="number"
-          value={monto}
-          onChange={(e) => {
-            setMonto(e.target.value);
-            setError(null);
-          }}
-          placeholder="Ej: 50000000"
-          className={error && !monto ? "error" : ""}
-        />
-        <div className="form-helper">Monto mínimo: $10,000 COP</div>
-      </div>
-
-      {/* Plazo */}
-      <div className="form-group">
-        <label className="required">Plazo (días)</label>
-        <input
-          type="number"
-          value={plazo}
-          onChange={(e) => {
-            setPlazo(e.target.value);
-            setError(null);
-          }}
-          placeholder="Ej: 30"
-          className={error && !plazo ? "error" : ""}
-        />
-        <div className="form-helper">Plazo en días para el CDT</div>
-      </div>
-
-      {/* Tasa */}
-      <div className="form-group">
-        <label className="required">Tasa de Interés (%)</label>
-        <input
-          type="number"
-          step="0.01"
-          value={tasaInteres}
-          onChange={(e) => {
-            setTasaInteres(e.target.value);
-            setError(null);
-          }}
-          placeholder="Ej: 7.5"
-          className={error && !tasaInteres ? "error" : ""}
-        />
-        <div className="form-helper">Tasa de interés anual efectiva</div>
-      </div>
-
-      {/* Botones de acción */}
-      <div className="form-actions">
-        <button type="submit" disabled={submitting}>
-          {submitting ? "Enviando..." : initialData ? "Guardar cambios" : "Crear solicitud"}
-        </button>
-        <button type="button" onClick={onCancel} disabled={submitting}>
-          Cancelar
-        </button>
-      </div>
-=======
     <form onSubmit={handleSubmit} className="solicitud-form">
       <div className="form-group">
         <label htmlFor="monto">
@@ -240,7 +138,6 @@ export default function SolicitudForm({ initialData, onSubmit, submitting, onCan
           {submitting ? "Guardando..." : (initialData ? "Actualizar" : "Crear Solicitud")}
         </button>
       </div>
->>>>>>> 32565a7ac88048d5b222d8e75467d2c6482562f3
     </form>
   );
 }
