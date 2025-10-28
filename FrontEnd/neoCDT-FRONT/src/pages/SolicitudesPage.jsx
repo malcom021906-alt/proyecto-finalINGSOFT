@@ -146,38 +146,44 @@ export default function SolicitudesPage() {
   // ===============================
   return (
     <div className="app-container">
+      <div className="sidebar">
+        <div className="sidebar-logo">
+          <div className="logo-circle"></div>
+          <div className="logo-text">
+            <span>CDT</span>
+            <span>BANKING</span>
+          </div>
+        </div>
+        
+        <nav className="sidebar-nav">
+          <div className="nav-item active">
+            <span className="nav-icon">🏠</span>
+            <span>Home</span>
+          </div>
+          <div className="nav-item">
+            <span className="nav-icon">🔄</span>
+            <span>Transactions</span>
+          </div>
+          <div className="nav-item">
+            <span className="nav-icon">📊</span>
+            <span>Investments</span>
+          </div>
+          <div className="nav-item">
+            <span className="nav-icon">⚙️</span>
+            <span>Settings</span>
+          </div>
+        </nav>
+      </div>
+
       <div className="page-card">
         <div className="content-inner">
           {/* Header */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "2rem",
-            }}
-          >
-            <h2 className="page-header" style={{ margin: 0 }}>
-              MIS SOLICITUDES CDT
-            </h2>
-            <button
-              className="logout-btn"
-              onClick={handleLogout}
-              style={{
-                backgroundColor: "#dc3545",
-                color: "white",
-                padding: "0.5rem 1rem",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
-                fontSize: "0.9rem",
-              }}
-              onMouseOver={(e) => (e.target.style.backgroundColor = "#c82333")}
-              onMouseOut={(e) => (e.target.style.backgroundColor = "#dc3545")}
-            >
-              Cerrar Sesión
-            </button>
-          </div>
+           <div className="header-container">
+          <h2 className="page-header">MIS SOLICITUDES CDT</h2>
+          <button className="logout-btn" onClick={handleLogout}>
+            Cerrar Sesión
+          </button>
+        </div>
 
           {/* Botón Nueva Solicitud */}
           <button
