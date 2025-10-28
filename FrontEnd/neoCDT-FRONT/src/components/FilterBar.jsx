@@ -1,5 +1,6 @@
 // src/components/FilterBar.jsx
 import React, { useState, useEffect } from "react";
+import "../css/filterbar.css"
 
 export default function FilterBar({ initial = {}, onApply }) {
   const [estado, setEstado] = useState(initial.estado || "");
