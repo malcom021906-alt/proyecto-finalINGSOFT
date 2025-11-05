@@ -1,4 +1,4 @@
-# api/solicitudes_cdt.py
+# app/api/solicitudes_cdt.py
 from fastapi import APIRouter, Depends, HTTPException, status, Security, Query
 from fastapi.security import HTTPAuthorizationCredentials
 from motor.motor_asyncio import AsyncIOMotorDatabase
@@ -44,10 +44,7 @@ async def crear_nueva_solicitud(
 ):
     print(f"Creating solicitud for user: {user_id}")
     print(f"Payload: {payload}")
-    
     solicitud = await crear_solicitud(db, user_id, payload)
-    
-    # Devolver en formato normalizado
     return serialize_solicitud_normalizada(solicitud)
 
 # --- Listar solicitudes con paginación y filtros ---
@@ -69,22 +66,19 @@ async def listar_mis_solicitudes(
     """
     from bson import ObjectId
     from datetime import datetime
-    
-    # Construir filtro base por usuario
+
     filtro = {"usuario_id": ObjectId(user_id)}
-    
-    # Aplicar filtros adicionales
+
     if estado:
-        # Normalizar estado a minúsculas para comparación
         filtro["estado"] = estado.lower()
-    
+
     if desde:
         try:
             fecha_desde = datetime.fromisoformat(desde.replace("Z", "+00:00"))
             filtro["fechaCreacion"] = {"$gte": fecha_desde}
         except ValueError:
             pass
-    
+
     if hasta:
         try:
             fecha_hasta = datetime.fromisoformat(hasta.replace("Z", "+00:00"))
@@ -94,34 +88,30 @@ async def listar_mis_solicitudes(
                 filtro["fechaCreacion"] = {"$lte": fecha_hasta}
         except ValueError:
             pass
-    
+
     if montoMin:
         filtro["monto"] = {"$gte": montoMin}
-    
+
     if q:
-        # Búsqueda de texto (puedes ajustar según necesites)
         filtro["$or"] = [
             {"estado": {"$regex": q, "$options": "i"}},
         ]
-    
-    # Contar total de documentos que coinciden con el filtro
+
     total = await db["solicitudes_cdt"].count_documents(filtro)
-    
-    # Calcular skip para paginación
     skip = (page - 1) * limit
-    
-    # Obtener documentos con paginación
-    cursor = db["solicitudes_cdt"].find(filtro).sort("fechaCreacion", -1).skip(skip).limit(limit)
+
+    cursor = (
+        db["solicitudes_cdt"]
+        .find(filtro)
+        .sort("fechaCreacion", -1)
+        .skip(skip)
+        .limit(limit)
+    )
     items = []
     async for doc in cursor:
         items.append(serialize_solicitud_normalizada(doc))
-    
-    return {
-        "items": items,
-        "total": total,
-        "page": page,
-        "limit": limit
-    }
+
+    return {"items": items, "total": total, "page": page, "limit": limit}
 
 # --- Actualizar solicitud en borrador ---
 @router.put("/{solicitud_id}")
@@ -131,20 +121,25 @@ async def actualizar_solicitud_existente(
     db: AsyncIOMotorDatabase = Depends(get_database),
     user_id: str = Depends(obtener_usuario_id),
 ):
-    from bson import ObjectId
-    
+    from bson import ObjectId, errors as bson_errors
+
     print(f"Updating solicitud {solicitud_id} for user: {user_id}")
     print(f"Payload: {payload}")
-    
-    # Verificar que la solicitud pertenece al usuario
-    solicitud = await db["solicitudes_cdt"].find_one({
-        "_id": ObjectId(solicitud_id),
-        "usuario_id": ObjectId(user_id)
-    })
-    
+
+    # Validar ID
+    try:
+        obj_id = ObjectId(solicitud_id)
+        user_obj = ObjectId(user_id)
+    except bson_errors.InvalidId:
+        raise HTTPException(status_code=400, detail="ID de solicitud inválido")
+
+    # Verificar pertenencia
+    solicitud = await db["solicitudes_cdt"].find_one(
+        {"_id": obj_id, "usuario_id": user_obj}
+    )
     if not solicitud:
         raise HTTPException(status_code=404, detail="Solicitud no encontrada")
-    
+
     updated = await actualizar_solicitud(db, solicitud_id, payload)
     if not updated:
         raise HTTPException(
@@ -162,58 +157,61 @@ async def cambiar_estado_solicitud(
     db: AsyncIOMotorDatabase = Depends(get_database),
     user_id: str = Depends(obtener_usuario_id),
 ):
-    from bson import ObjectId
+    from bson import ObjectId, errors as bson_errors
     from datetime import datetime, timezone
-    
-    # Verificar que la solicitud pertenece al usuario
-    solicitud = await db["solicitudes_cdt"].find_one({
-        "_id": ObjectId(solicitud_id),
-        "usuario_id": ObjectId(user_id)
-    })
-    
+
+    # Validar ID
+    try:
+        obj_id = ObjectId(solicitud_id)
+        user_obj = ObjectId(user_id)
+    except bson_errors.InvalidId:
+        raise HTTPException(status_code=400, detail="ID de solicitud inválido")
+
+    # Verificar pertenencia
+    solicitud = await db["solicitudes_cdt"].find_one(
+        {"_id": obj_id, "usuario_id": user_obj}
+    )
     if not solicitud:
         raise HTTPException(status_code=404, detail="Solicitud no encontrada")
-    
+
     estado_normalizado = estado.lower()
     estado_actual = solicitud["estado"]
-    
-    # Validar transiciones de estado
+
     if estado_normalizado == "en_validacion":
         if estado_actual != "borrador":
-            raise HTTPException(status_code=400, detail="Solo se pueden enviar solicitudes en borrador")
+            raise HTTPException(
+                status_code=400, detail="Solo se pueden enviar solicitudes en borrador"
+            )
         await db["solicitudes_cdt"].update_one(
-            {"_id": ObjectId(solicitud_id)},
-            {"$set": {
-                "estado": "en_validacion",
-                "fechaActualizacion": datetime.now(timezone.utc)
-            }}
+            {"_id": obj_id},
+            {
+                "$set": {
+                    "estado": "en_validacion",
+                    "fechaActualizacion": datetime.now(timezone.utc),
+                }
+            },
         )
-    
+
     elif estado_normalizado == "cancelada":
         if estado_actual not in ["borrador", "en_validacion"]:
             raise HTTPException(status_code=400, detail="No se puede cancelar esta solicitud")
-        
+
         update_data = {
             "estado": "cancelada",
-            "fechaActualizacion": datetime.now(timezone.utc)
+            "fechaActualizacion": datetime.now(timezone.utc),
         }
         if razon:
             update_data["razon_cancelacion"] = razon
-        
-        await db["solicitudes_cdt"].update_one(
-            {"_id": ObjectId(solicitud_id)},
-            {"$set": update_data}
-        )
-    
+
+        await db["solicitudes_cdt"].update_one({"_id": obj_id}, {"$set": update_data})
+
     else:
         raise HTTPException(status_code=400, detail=f"Estado '{estado}' no válido")
-    
-    # Obtener solicitud actualizada
-    solicitud_actualizada = await db["solicitudes_cdt"].find_one({"_id": ObjectId(solicitud_id)})
+
+    solicitud_actualizada = await db["solicitudes_cdt"].find_one({"_id": obj_id})
     return serialize_solicitud_normalizada(solicitud_actualizada)
 
-# --- Eliminar solicitud (lógico) ---
-# --- Eliminar solicitud (lógico) - CORREGIDO ---
+# --- Eliminar solicitud (lógico) - ya maneja InvalidId ---
 @router.delete("/{solicitud_id}")
 async def eliminar_solicitud(
     solicitud_id: str,
@@ -226,58 +224,35 @@ async def eliminar_solicitud(
     """
     from bson import ObjectId
     from datetime import datetime, timezone
-    
+
     print(f"🗑️ DELETE endpoint called for solicitud_id: {solicitud_id}, user_id: {user_id}")
-    
+
     try:
-        # Convertir a ObjectId
         solicitud_obj_id = ObjectId(solicitud_id)
-    except Exception as e:
-        print(f"❌ Invalid ObjectId format: {solicitud_id}")
+        user_obj = ObjectId(user_id)
+    except Exception:
         raise HTTPException(status_code=400, detail="ID de solicitud inválido")
-    
-    # Verificar que la solicitud pertenece al usuario
-    solicitud = await db["solicitudes_cdt"].find_one({
-        "_id": solicitud_obj_id,
-        "usuario_id": ObjectId(user_id)
-    })
-    
+
+    solicitud = await db["solicitudes_cdt"].find_one(
+        {"_id": solicitud_obj_id, "usuario_id": user_obj}
+    )
     if not solicitud:
-        print(f"❌ Solicitud not found: {solicitud_id}")
         raise HTTPException(status_code=404, detail="Solicitud no encontrada")
-    
-    try:
-        # Eliminación lógica
-        update_data = {
-            "eliminada": True,
-            "fechaEliminacion": datetime.now(timezone.utc)
-        }
-        
-        result = await db["solicitudes_cdt"].update_one(
-            {"_id": solicitud_obj_id},
-            {"$set": update_data}
-        )
-        
-        print(f"✅ Deletion successful. Modified count: {result.modified_count}")
-        
-        # Obtener y devolver la solicitud actualizada
-        solicitud_actualizada = await db["solicitudes_cdt"].find_one({
-            "_id": solicitud_obj_id
-        })
-        
-        return {
-            "success": True,
-            "message": "Solicitud eliminada correctamente",
-            "id": solicitud_id,
-            "data": serialize_solicitud_normalizada(solicitud_actualizada)
-        }
-        
-    except Exception as e:
-        print(f"❌ Error during deletion: {str(e)}")
-        raise HTTPException(
-            status_code=500,
-            detail=f"Error al eliminar la solicitud: {str(e)}"
-        )
+
+    update_data = {"eliminada": True, "fechaEliminacion": datetime.now(timezone.utc)}
+    result = await db["solicitudes_cdt"].update_one(
+        {"_id": solicitud_obj_id}, {"$set": update_data}
+    )
+    print(f"✅ Deletion modified: {result.modified_count}")
+
+    solicitud_actualizada = await db["solicitudes_cdt"].find_one({"_id": solicitud_obj_id})
+    return {
+        "success": True,
+        "message": "Solicitud eliminada correctamente",
+        "id": solicitud_id,
+        "data": serialize_solicitud_normalizada(solicitud_actualizada),
+    }
+
 # --- Serializador normalizado para el frontend ---
 def serialize_solicitud_normalizada(doc: dict) -> dict:
     """
@@ -285,23 +260,22 @@ def serialize_solicitud_normalizada(doc: dict) -> dict:
     para coincidir con el frontend
     """
     from datetime import datetime
-    
+
     estado_map = {
         "borrador": "Borrador",
         "en_validacion": "En validación",
         "aprobada": "Aprobada",
         "rechazada": "Rechazada",
-        "cancelada": "Cancelada"
+        "cancelada": "Cancelada",
     }
-    
-    # Función auxiliar para formatear fechas
+
     def format_fecha(fecha):
         if fecha is None:
             return None
         if isinstance(fecha, datetime):
             return fecha.isoformat()
         return str(fecha)
-    
+
     return {
         "id": str(doc["_id"]),
         "usuario_id": str(doc["usuario_id"]),
