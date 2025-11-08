@@ -1,0 +1,6 @@
+projectKey=frontend-cdt
+serverUrl=http://localhost:9000
+serverVersion=25.10.0.114319
+dashboardUrl=http://localhost:9000/dashboard?id=frontend-cdt
+ceTaskId=1af38c6c-5099-4919-b921-668117520c54
+ceTaskUrl=http://localhost:9000/api/ce/task?id=1af38c6c-5099-4919-b921-668117520c54

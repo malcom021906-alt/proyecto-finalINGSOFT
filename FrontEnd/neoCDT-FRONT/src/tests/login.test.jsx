@@ -1,7 +1,15 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import Login from "../components/login";
+
+// Mock del contexto de autenticación
+vi.mock("../context/authContext", () => ({
+  useAuth: () => ({
+    login: vi.fn(),
+    error: null
+  })
+}));
 
 const renderWithRouter = (ui) => {
   return render(<BrowserRouter>{ui}</BrowserRouter>);
