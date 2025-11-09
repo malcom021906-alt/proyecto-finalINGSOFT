@@ -8,6 +8,7 @@ import ForgotPassword from "./components/forgotPassword";
 import SolicitudesPage from "./pages/SolicitudesPage";
 import AgenteDashboard from "./components/AgenteDashboard";
 import ProtectedRoute from "./router/protectedroute";
+import AgenteDashboard from "./pages/agentPage";
 
 
 

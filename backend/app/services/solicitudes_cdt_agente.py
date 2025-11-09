@@ -9,7 +9,13 @@ from app.schemas.solicitudes_cdt_agente import RechazoRequest
 
 # --- Listar todas las solicitudes pendientes de validación ---
 async def listar_pendientes(db: AsyncIOMotorDatabase) -> List[dict]:
-    cursor = db["solicitudes_cdt"].find({"estado": "en_validacion"})
+    """
+    Retorna solicitudes en estado 'borrador' o 'en_validacion'
+    """
+    cursor = db["solicitudes_cdt"].find({
+        "estado": {"$in": ["borrador", "en_validacion"]},
+        "eliminada": {"$ne": True}
+    })
     solicitudes = []
     async for doc in cursor:
         doc["id"] = str(doc["_id"])
@@ -22,8 +28,13 @@ async def aprobar_solicitud(db: AsyncIOMotorDatabase, solicitud_id: str, agente_
     solicitud = await db["solicitudes_cdt"].find_one({"_id": ObjectId(solicitud_id)})
     if not solicitud:
         raise HTTPException(status_code=404, detail="Solicitud no encontrada")
-    if solicitud["estado"] != "en_validacion":
-        raise HTTPException(status_code=400, detail="Solo se pueden aprobar solicitudes en validación")
+    
+    # ✅ Aceptar tanto "borrador" como "en_validacion"
+    if solicitud["estado"] not in ["borrador", "en_validacion"]:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Solo se pueden aprobar solicitudes pendientes. Estado actual: {solicitud['estado']}"
+        )
 
     nuevo_estado = "aprobada"
     await db["solicitudes_cdt"].update_one(
@@ -46,8 +57,13 @@ async def rechazar_solicitud(db: AsyncIOMotorDatabase, solicitud_id: str, agente
     solicitud = await db["solicitudes_cdt"].find_one({"_id": ObjectId(solicitud_id)})
     if not solicitud:
         raise HTTPException(status_code=404, detail="Solicitud no encontrada")
-    if solicitud["estado"] != "en_validacion":
-        raise HTTPException(status_code=400, detail="Solo se pueden rechazar solicitudes en validación")
+    
+    # ✅ Aceptar tanto "borrador" como "en_validacion"
+    if solicitud["estado"] not in ["borrador", "en_validacion"]:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Solo se pueden rechazar solicitudes pendientes. Estado actual: {solicitud['estado']}"
+        )
 
     nuevo_estado = "rechazada"
     await db["solicitudes_cdt"].update_one(

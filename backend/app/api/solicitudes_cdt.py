@@ -123,6 +123,35 @@ async def listar_mis_solicitudes(
         "limit": limit
     }
 
+
+# --- Listar solicitudes pendientes para el agente ---
+@router.get("/agente/pendientes")
+async def listar_solicitudes_pendientes_agente(
+    db: AsyncIOMotorDatabase = Depends(get_database),
+    credentials: HTTPAuthorizationCredentials = Security(bearer_scheme)
+):
+    """
+    Devuelve las solicitudes pendientes para el agente:
+    Incluye tanto 'borrador' como 'en_validacion'.
+    """
+    try:
+        payload = jwt.decode(credentials.credentials, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        agente_id = payload.get("sub")
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Token inválido o faltante")
+
+    # Filtro: solicitudes no eliminadas y en estado relevante
+    filtro = {
+        "estado": {"$in": ["borrador", "en_validacion"]},
+        "eliminada": {"$ne": True}
+    }
+
+    cursor = db["solicitudes_cdt"].find(filtro).sort("fechaCreacion", -1)
+    items = [serialize_solicitud_normalizada(doc) async for doc in cursor]
+    
+    return items
+
+
 # --- Actualizar solicitud en borrador ---
 @router.put("/{solicitud_id}")
 async def actualizar_solicitud_existente(

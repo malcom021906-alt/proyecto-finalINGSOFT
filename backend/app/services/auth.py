@@ -12,7 +12,6 @@ from app.core.config import settings
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def verify_password(plain: str, hashed: str) -> bool:
-    # bcrypt ignora >72 bytes: útil cortar o validar antes si lo deseas
     return pwd_context.verify(plain, hashed)
 
 def hash_password(plain: str) -> str:
@@ -28,7 +27,7 @@ async def find_user_by_correo(db: AsyncIOMotorDatabase, correo: str) -> Optional
     # Busca primero en 'usuarios'
     user = await db["usuarios"].find_one({"correo": correo})
     if user:
-        user["rol"] = "cliente"
+        user["rol"] = user.get("rol", "cliente")
         user["tipo_coleccion"] = "usuarios"
         return user
 
@@ -42,23 +41,29 @@ async def find_user_by_correo(db: AsyncIOMotorDatabase, correo: str) -> Optional
     return None
 
 def serialize_user(doc: dict) -> dict:
+    """
+    Convierte un documento de MongoDB en un dict limpio para respuesta pública.
+    Incluye 'rol' para compatibilidad con el frontend.
+    """
     return {
         "id": str(doc.get("_id")),
         "nombre": doc.get("nombre"),
         "correo": doc.get("correo"),
-        "telefono": doc.get("telefono") if "telefono" in doc else None,
+        "telefono": doc.get("telefono"),
         "rol": doc.get("rol", "cliente"),
         "activo": bool(doc.get("activo", True)),
+        # Permisos opcionales (solo si existen)
+        "permisos": doc.get("permisos", []),
     }
 
 async def register_user(db: AsyncIOMotorDatabase, data: dict) -> dict:
     """
-    Opcional: por si luego quieres crear usuarios.
-    data = {nombre, correo, contraseña, telefono}
+    Registra un usuario cliente (por defecto).
     """
     exists = await db["usuarios"].find_one({"correo": data["correo"]})
     if exists:
         raise ValueError("El correo ya está registrado")
+
     hashed = hash_password(data["contraseña"])
     doc = {
         "nombre": data["nombre"],
@@ -67,6 +72,8 @@ async def register_user(db: AsyncIOMotorDatabase, data: dict) -> dict:
         "telefono": data.get("telefono"),
         "fechaCreacion": datetime.now(timezone.utc),
         "activo": True,
+        "rol": "cliente",
+        "permisos": [],
     }
     res = await db["usuarios"].insert_one(doc)
     doc["_id"] = res.inserted_id
