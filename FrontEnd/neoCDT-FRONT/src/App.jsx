@@ -6,7 +6,7 @@ import Login from "./components/login";
 import Register from "./components/register";
 import ForgotPassword from "./components/forgotPassword";
 import SolicitudesPage from "./pages/SolicitudesPage";
-import AgenteDashboard from "./components/AgenteDashboard";
+//import AgenteDashboard from "./components/AgenteDashboard";
 import ProtectedRoute from "./router/protectedroute";
 import AgenteDashboard from "./pages/agentPage";
 
