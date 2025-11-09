@@ -6,7 +6,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    include: ['src/**/*.test.jsx'],
+    include: ['src/**/*.test.{js,jsx}'],
     // 👇 EXCLUYE TODOS los tests que fallan
     exclude: [
       'node_modules',   

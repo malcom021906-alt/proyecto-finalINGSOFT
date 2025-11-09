@@ -26,19 +26,18 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = async (email, password) => {
-    try {
-      const tokenData = await loginRequest(email, password);
-      localStorage.setItem("token", tokenData.access_token);
-      const me = await meRequest();
-      setUser(me);
-      setError(null);
-      return me;
-    } catch (err) {
-      console.error("Login error:", err.message);
-      setError("Invalid credentials");
-      throw err;
-    }
-  };
+  try {
+    const me = await loginRequest(email, password);
+    setUser(me);
+    setError(null);
+    return me; // importante: devolvemos el usuario con rol
+  } catch (err) {
+    console.error("Login error:", err.message);
+    setError("Invalid credentials");
+    throw err;
+  }
+};
+
 
   const logout = () => {
     localStorage.removeItem("token");

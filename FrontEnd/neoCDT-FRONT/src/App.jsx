@@ -7,6 +7,7 @@ import Register from "./components/register";
 import ForgotPassword from "./components/forgotPassword";
 import SolicitudesPage from "./pages/SolicitudesPage";
 import ProtectedRoute from "./router/protectedroute";
+import AgenteDashboard from "./pages/agentPage";
 
 
 
@@ -24,6 +25,7 @@ export default function App() {
       {/* Rutas privadas */}
       <Route element={<ProtectedRoute />}>
         <Route path="/solicitudes" element={<SolicitudesPage />} />
+        <Route path="/agente" element={<AgenteDashboard />} />
       </Route>
 
       {/* Página no encontrada */}
