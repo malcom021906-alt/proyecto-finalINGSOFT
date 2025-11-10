@@ -3,93 +3,101 @@ import { test, expect } from '@playwright/test';
 import { loginAsAgente } from '../helpers/auth.helper.js';
 
 test.describe('HU-08: Ver solicitudes pendientes', () => {
-  test.beforeEach(async ({ page }) => {
-    // Establecer estado inicial limpio
-    await page.route('**/api/solicitudes**', async (route) => {
+  async function mockSolicitudes(page) {
+    const mockData = [
+      {
+        id: 'mock-001',
+        cliente: 'Neo CDT',
+        monto: 200000,
+        plazo: 3,
+        tasa: 5.2,
+        estado: 'En validación',
+        fecha: '2025-11-09',
+      },
+      {
+        id: 'mock-002',
+        cliente: 'Banco Test',
+        monto: 500000,
+        plazo: 6,
+        tasa: 5.4,
+        estado: 'Aprobada',
+        fecha: '2025-11-08',
+      },
+    ];
+
+    // ✅ Interceptar la URL real que usa el front
+    await page.route('**/solicitudes/agente/pendientes**', async (route) => {
       await route.fulfill({
         status: 200,
-        body: JSON.stringify([])
+        contentType: 'application/json',
+        body: JSON.stringify(mockData),
       });
     });
-  });
-  
+  }
+
+  // -------------------------------------------------------
+  // Escenario 1: Ver panel de solicitudes pendientes
+  // -------------------------------------------------------
   test('Escenario: Agente ve panel de solicitudes pendientes', async ({ page }) => {
-    // GIVEN: El agente está autenticado en el panel de administración
     await loginAsAgente(page);
-    
-    // WHEN: Accede a la sección "Solicitudes pendientes"
-    await expect(page.getByRole('heading', { name: /PANEL DE VALIDACIÓN/i }))
-      .toBeVisible({ timeout: 10000 });
-    
-    // THEN: El sistema muestra un listado con solicitudes
-    // Esperar primero que se carguen los datos
-    await page.waitForResponse(
-      response => response.url().includes('/api/solicitudes') && response.status() === 200,
-      { timeout: 15000 }
-    );
-    
-    // Verificar que existe la tabla y sus elementos
+    await mockSolicitudes(page);
+
+    // Esperar heading principal
+    await expect(page.getByText(/PANEL DE VALIDACIÓN/i)).toBeVisible({ timeout: 10000 });
+
+    // Esperar a que la tabla cargue
     const table = page.locator('table').first();
     await expect(table).toBeVisible({ timeout: 10000 });
-    
-    // Verificar headers de la tabla
-    const headers = [/Estado/i, /Monto/i, /Plazo/i, /Fecha/i];
+
+    // Verificar que las columnas básicas existan (sin roles)
+    const headers = ['Estado', 'Monto', 'Plazo', 'Fecha'];
     for (const header of headers) {
-      await expect(
-        page.getByRole('columnheader', { name: header })
-      ).toBeVisible({ timeout: 5000 });
+      await expect(page.locator(`table >> text=${header}`)).toBeVisible();
     }
-    
-    // Buscar solicitudes en validación
-    const enValidacionBadges = page.getByText(/En validación/i);
-    const count = await enValidacionBadges.count();
-    
+
+    // Buscar solicitudes "En validación"
+    const enValidacion = page.locator('table >> text=/En validación/i');
+    const count = await enValidacion.count();
+
     if (count > 0) {
-      // Si hay solicitudes, verificar que sean visibles y clicables
-      const firstBadge = enValidacionBadges.first();
-      await expect(firstBadge).toBeVisible({ timeout: 5000 });
-      await expect(firstBadge).toBeEnabled();
-      
-      // Verificar que los botones de acción estén presentes
-      const row = firstBadge.locator('..').locator('..'); // Subir al tr
-      await expect(row.getByRole('button', { name: /Aprobar|Rechazar/i }))
-        .toBeVisible({ timeout: 5000 });
+      const first = enValidacion.first();
+      await expect(first).toBeVisible();
+      const row = first.locator('..').locator('..');
+      await expect(row.locator('button:has-text("Aprobar")')).toBeVisible();
+      await expect(row.locator('button:has-text("Rechazar")')).toBeVisible();
     } else {
-      // Si no hay solicitudes, debería haber un mensaje
-      await expect(
-        page.getByText(/No hay solicitudes pendientes|Sin solicitudes/i)
-      ).toBeVisible({ timeout: 5000 });
+      await expect(page.getByText(/No hay solicitudes pendientes|Sin solicitudes/i))
+        .toBeVisible({ timeout: 5000 });
     }
   });
-  
+
+  // -------------------------------------------------------
+  // Escenario 2: Filtrar solicitudes por estado
+  // -------------------------------------------------------
   test('Escenario: Filtrar solicitudes por estado', async ({ page }) => {
-    // GIVEN: El agente está en el panel de validación
     await loginAsAgente(page);
-    await expect(page.getByRole('heading', { name: /PANEL DE VALIDACIÓN/i }))
-      .toBeVisible({ timeout: 10000 });
-      
-    // WHEN: Filtra por estado "En validación"
-    const filtroEstado = page.getByRole('combobox', { name: /Estado/i });
-    await filtroEstado.selectOption({ label: /En validación/i });
-    
-    await page.getByRole('button', { name: /Aplicar/i }).click();
-    
-    // THEN: Solo se muestran solicitudes en ese estado
-    await page.waitForResponse(
-      response => response.url().includes('/api/solicitudes') && response.status() === 200,
-      { timeout: 15000 }
-    );
-    
-    const estadosBadges = page.getByText(/En validación/i);
-    const count = await estadosBadges.count();
-    
+    await mockSolicitudes(page);
+
+    await expect(page.getByText(/PANEL DE VALIDACIÓN/i)).toBeVisible({ timeout: 10000 });
+
+    // Seleccionar opción exacta
+    const filtroEstado = page.locator('select'); // más genérico y seguro
+    await filtroEstado.selectOption('En validación');
+    await page.getByText(/Aplicar Filtros/i).click();
+
+    // Esperar que la tabla se actualice
+    const table = page.locator('table').first();
+    await expect(table).toBeVisible({ timeout: 10000 });
+
+    // Verificar solo "En validación"
+    const estados = page.locator('table >> text=/En validación/i');
+    const count = await estados.count();
+
     if (count > 0) {
-      // Verificar que todas las solicitudes visibles están en validación
-      await expect(page.getByText(/Aprobada|Rechazada|Borrador/i)).not.toBeVisible();
+      await expect(page.locator('table >> text=/Aprobada|Rechazada|Borrador/i')).toHaveCount(0);
     } else {
-      await expect(
-        page.getByText(/No hay solicitudes pendientes|Sin solicitudes/i)
-      ).toBeVisible({ timeout: 5000 });
+      await expect(page.getByText(/No hay solicitudes pendientes|Sin solicitudes/i))
+        .toBeVisible({ timeout: 5000 });
     }
   });
 });

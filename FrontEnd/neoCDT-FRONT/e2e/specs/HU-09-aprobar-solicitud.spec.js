@@ -1,11 +1,9 @@
-// e2e/specs/HU-09-aprobar-solicitud.spec.js
 import { test, expect } from '@playwright/test';
 import { loginAsCliente, loginAsAgente, waitForAlert } from '../helpers/auth.helper.js';
 import { crearSolicitudCDT } from '../helpers/solicitudes.helper.js';
 
 test.describe('HU-09: Aprobar solicitud en estado Borrador', () => {
   test('Escenario: El agente aprueba una solicitud que está en estado Borrador', async ({ browser }) => {
-    // Crear contextos separados para cliente y agente
     const clienteContext = await browser.newContext();
     const agenteContext = await browser.newContext();
     const clientePage = await clienteContext.newPage();
@@ -26,15 +24,16 @@ test.describe('HU-09: Aprobar solicitud en estado Borrador', () => {
       // 🔸 No se envía a validación, queda en estado "Borrador"
 
       // ===== PARTE 2: AGENTE APRUEBA =====
-      // GIVEN: El agente ve una solicitud en estado "Borrador"
       await loginAsAgente(agentePage);
 
-      // Esperar a que se cargue la lista de solicitudes (puedes ajustar el texto según tu interfaz)
-      await expect(agentePage.getByText(/Borrador/i)).toBeVisible({ timeout: 10000 });
+      // Esperar a que cargue la tabla y verificar que hay al menos una solicitud en estado Borrador
+      const estadoBorrador = agentePage.locator('span.estado', { hasText: 'Borrador' });
+      await expect(estadoBorrador.first()).toBeVisible({ timeout: 10000 });
+
       await agentePage.waitForTimeout(3000);
 
       // WHEN: Hace clic en "Aprobar"
-      const aprobarBtn = agentePage.getByRole('button', { name: /✅ Aprobar/i }).first();
+      const aprobarBtn = agentePage.getByRole('button', { name: /Aprobar/i }).first();
       await aprobarBtn.click();
 
       // Esperar modal de confirmación
@@ -44,14 +43,19 @@ test.describe('HU-09: Aprobar solicitud en estado Borrador', () => {
       // THEN: El sistema cambia el estado a "Aprobada"
       await expect(agentePage.getByText(/Solicitud aprobada/i)).toBeVisible({ timeout: 15000 });
 
-      // AND: Envía notificación al cliente
+      // AND: El cliente ve el estado actualizado
       await clientePage.reload();
       await clientePage.waitForTimeout(3000);
-      await expect(clientePage.getByText(/Aprobada/i).first()).toBeVisible({ timeout: 10000 });
 
+      const estadoAprobado = clientePage.locator('table >> text=Aprobada');
+      await expect(estadoAprobado.first()).toBeVisible({ timeout: 10000 });
+
+    } catch (error) {
+      console.error('Error en la prueba HU-09:', error);
+      throw error;
     } finally {
-      await clienteContext.close();
-      await agenteContext.close();
+      if (!clientePage.isClosed()) await clienteContext.close();
+      if (!agentePage.isClosed()) await agenteContext.close();
     }
   });
 });

@@ -8,7 +8,6 @@ async function retryAction(page, action, options = {}) {
   const { 
     maxRetries = 3,
     delayMs = 1000,
-    timeout = 5000,
     description = 'acción'
   } = options;
   
