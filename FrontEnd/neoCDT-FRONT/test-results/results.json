@@ -1,0 +1,598 @@
+{
+  "config": {
+    "configFile": "C:\\Users\\malco\\Documents\\UAO\\INSOFT\\finalInsoft\\proyecto-finalINGSOFT\\FrontEnd\\neoCDT-FRONT\\playwright.config.js",
+    "rootDir": "C:/Users/malco/Documents/UAO/INSOFT/finalInsoft/proyecto-finalINGSOFT/FrontEnd/neoCDT-FRONT/e2e/specs",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "playwright-report"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/results.json"
+        }
+      ],
+      [
+        "list",
+        null
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "C:/Users/malco/Documents/UAO/INSOFT/finalInsoft/proyecto-finalINGSOFT/FrontEnd/neoCDT-FRONT/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "C:/Users/malco/Documents/UAO/INSOFT/finalInsoft/proyecto-finalINGSOFT/FrontEnd/neoCDT-FRONT/e2e/specs",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.56.1",
+    "workers": 1,
+    "webServer": {
+      "command": "npm run dev",
+      "url": "http://localhost:5173",
+      "reuseExistingServer": true,
+      "timeout": 120000
+    }
+  },
+  "suites": [
+    {
+      "title": "HU-01-login.spec.js",
+      "file": "HU-01-login.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "HU-01: Inicio de sesión",
+          "file": "HU-01-login.spec.js",
+          "line": 4,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Escenario: Login exitoso",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3306,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-10T03:13:48.661Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b790c2af41bdcc002328-cd00b9fc7f8ec31db1b4",
+              "file": "HU-01-login.spec.js",
+              "line": 6,
+              "column": 3
+            },
+            {
+              "title": "Escenario: Login fallido",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1330,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-10T03:13:53.087Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b790c2af41bdcc002328-fcc1be9b8d802e2c8cac",
+              "file": "HU-01-login.spec.js",
+              "line": 24,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "HU-02-prefill-kyc.spec.js",
+      "file": "HU-02-prefill-kyc.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "HU-02: Prefill de datos KYC",
+          "file": "HU-02-prefill-kyc.spec.js",
+          "line": 5,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Escenario: Datos KYC prellenados en formulario",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1958,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-10T03:13:54.440Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ee96d0fb7fc9aa20d477-d5d4f6fea8869050b71e",
+              "file": "HU-02-prefill-kyc.spec.js",
+              "line": 7,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "HU-03-crear-solicitud.spec.js",
+      "file": "HU-03-crear-solicitud.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "HU-03: Crear nueva solicitud de CDT",
+          "file": "HU-03-crear-solicitud.spec.js",
+          "line": 6,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Escenario: Solicitud válida",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 7548,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "No se encontró diálogo, continuando...\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-10T03:13:56.429Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4a76f75e7ea22bded964-53243f83c0f298bb0609",
+              "file": "HU-03-crear-solicitud.spec.js",
+              "line": 12,
+              "column": 3
+            },
+            {
+              "title": "Escenario: Solicitud inválida",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2357,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-10T03:14:03.988Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4a76f75e7ea22bded964-df87f238ba4bb6b83382",
+              "file": "HU-03-crear-solicitud.spec.js",
+              "line": 42,
+              "column": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "HU-04-consultar-solicitudes.spec.js",
+      "file": "HU-04-consultar-solicitudes.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Escenario: Ver listado de solicitudes",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 391,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-11-10T03:14:06.382Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "362c46fe41caa568c956-2ebf495815c34e40a370",
+          "file": "HU-04-consultar-solicitudes.spec.js",
+          "line": 3,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "HU-06-editar-solicitud.spec.js",
+      "file": "HU-06-editar-solicitud.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "HU-06: Editar solicitud en borrador",
+          "file": "HU-06-editar-solicitud.spec.js",
+          "line": 6,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Escenario: Edición permitida",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 18562,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "No se encontró diálogo, continuando...\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-10T03:14:06.793Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "5c14b34b85d045b046b9-280e789d3a02e4e5c4a5",
+              "file": "HU-06-editar-solicitud.spec.js",
+              "line": 12,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "HU-08-ver-pendientes.spec.js",
+      "file": "HU-08-ver-pendientes.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "HU-08: Ver solicitudes pendientes",
+          "file": "HU-08-ver-pendientes.spec.js",
+          "line": 5,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Escenario: Agente ve panel de solicitudes pendientes",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2219,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-10T03:14:25.375Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "04a9ed1bc9c70c285927-323226886b68eb839557",
+              "file": "HU-08-ver-pendientes.spec.js",
+              "line": 41,
+              "column": 3
+            },
+            {
+              "title": "Escenario: Filtrar solicitudes por estado",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2287,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-10T03:14:27.603Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "04a9ed1bc9c70c285927-545674913ad1bff811da",
+              "file": "HU-08-ver-pendientes.spec.js",
+              "line": 77,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "HU-09-aprobar-solicitud.spec.js",
+      "file": "HU-09-aprobar-solicitud.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "HU-09: Aprobar solicitud en estado Borrador",
+          "file": "HU-09-aprobar-solicitud.spec.js",
+          "line": 5,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Escenario: El agente aprueba una solicitud que está en estado Borrador",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 14936,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "No se encontró diálogo, continuando...\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-10T03:14:29.911Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "500de38c219d19dbd93f-573edc06576c151d7b43",
+              "file": "HU-09-aprobar-solicitud.spec.js",
+              "line": 6,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "HU-10-rechazar-solicitud.spec.js",
+      "file": "HU-10-rechazar-solicitud.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "HU-10: Rechazar solicitudes",
+          "file": "HU-10-rechazar-solicitud.spec.js",
+          "line": 5,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Escenario: Rechazar solicitud con razón",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 19445,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "No se encontró diálogo, continuando...\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-10T03:14:44.868Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "c98b4cd2e27b2518dec6-e80bed50a55f20900e94",
+              "file": "HU-10-rechazar-solicitud.spec.js",
+              "line": 6,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2025-11-10T03:13:47.628Z",
+    "duration": 78595.11600000001,
+    "expected": 11,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}
