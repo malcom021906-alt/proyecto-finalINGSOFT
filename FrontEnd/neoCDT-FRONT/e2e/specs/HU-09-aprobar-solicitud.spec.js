@@ -59,4 +59,7 @@ test.describe('HU-09: Aprobar solicitud en estado Borrador', () => {
     }
   });
 });
+<<<<<<< HEAD
 
+=======
+>>>>>>> 6fd3b1e49c759cf433737758d988a9f9b5d3e118

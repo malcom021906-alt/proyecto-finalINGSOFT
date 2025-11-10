@@ -13,6 +13,7 @@ class SolicitudAgenteDB(BaseModel):
     estado: str
     fechaCreacion: datetime
     fechaActualizacion: datetime
+    
 
     class Config:
         from_attributes = True

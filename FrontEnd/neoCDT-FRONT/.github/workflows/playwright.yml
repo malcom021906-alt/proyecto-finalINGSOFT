@@ -1,0 +1,57 @@
+name: Playwright Tests
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    
+    services:
+      mongodb:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 18
+    
+    # Instalar backend
+    - name: Install Backend Dependencies
+      working-directory: ./backend
+      run: pip install -r requirements.txt
+    
+    # Iniciar backend
+    - name: Start Backend
+      working-directory: ./backend
+      run: |
+        uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+        sleep 10
+    
+    # Instalar frontend
+    - name: Install Frontend Dependencies
+      working-directory: ./FrontEnd/neoCDT-FRONT
+      run: npm ci
+    
+    - name: Install Playwright Browsers
+      working-directory: ./FrontEnd/neoCDT-FRONT
+      run: npx playwright install --with-deps
+    
+    # Ejecutar pruebas E2E
+    - name: Run Playwright tests
+      working-directory: ./FrontEnd/neoCDT-FRONT
+      run: npx playwright test
+    
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: playwright-report
+        path: FrontEnd/neoCDT-FRONT/playwright-report/
+        retention-days: 30
