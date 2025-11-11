@@ -113,7 +113,7 @@ describe("SolicitudesTable Component", () => {
     const enviarButton = screen.getByRole("button", { name: /Enviar/i });
     fireEvent.click(enviarButton);
 
-    expect(mockOnChangeState).toHaveBeenCalledWith("abc123def456", "En validación");
+    expect(mockOnChangeState).toHaveBeenCalledWith("abc123def456", "en_validacion");
   });
 
   // 🧪 TEST 6 — Ejecuta onChangeState para Cancelar
