@@ -45,9 +45,9 @@ def serialize_user(doc: dict) -> dict:
     return {
         "id": str(doc.get("_id")),
         "nombre": doc.get("nombre"),
+        "rol": doc.get("rol") if "rol" in doc else "cliente",
         "correo": doc.get("correo"),
         "telefono": doc.get("telefono") if "telefono" in doc else None,
-        "rol": doc.get("rol", "cliente"),
         "activo": bool(doc.get("activo", True)),
     }
 

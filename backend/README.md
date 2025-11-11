@@ -11,8 +11,9 @@ El backend expone una API REST segura con autenticación **JWT** y conexión a *
 - **FastAPI** — framework principal para la API
 - **MongoDB (Motor Async)** — base de datos NoSQL
 - **Passlib (bcrypt)** — encriptación de contraseñas
-- **PyJWT** — autenticación mediante tokens
-- **HTTPX / Pytest-AsyncIO** — pruebas automatizadas
+- **Python-JOSE** — Autenticación mediante JWT 
+- **HTTPX / Pytest-AsyncIO** — pruebas automatizadas y cobertura 
+- **Uvicorn** — Servidor ASGI
 
 ---
 
@@ -43,13 +44,10 @@ backend/
 │   │   └── solicitudes_cdt_agente.py
 │   │
 │   └── tests/                   # Pruebas automatizadas
-│   │   ├── conftest.py
-│   │   ├── test_auth.py
-│   │   ├── test_solicitudes_agente.py
-│   │   └── test_solicitudes_cliente.py
 │
 ├── .env                         # Variables de entorno
 └── requirements.txt             # Dependencias del backend
+└── pytest.ini                    # Configuración de pytest y cobertura
 ```
 
 ---
@@ -110,20 +108,39 @@ Documentación interactiva:
 
 ---
 
-## 🧪 Pruebas unitarias
+## 🧪 Pruebas y cobertura
 
-Las pruebas usan **pytest + httpx + pytest-asyncio** con una base de datos simulada (FakeDB).
+El proyecto incluye **más de 30 pruebas unitarias y de integración**, con base de datos simulada (`FakeDB`) y fixtures automáticas.
 
-Ejecuta:
+### Ejecutar todas las pruebas:
 
 ```bash
-pytest -v
+pytest
 ```
 
-Resultado esperado:
+### Ejecutar con cobertura:
+
+```bash
+pytest --cov=app --cov-report=term-missing
 ```
-5 passed in ~1.50s
+
+### Configuración de cobertura (pytest.ini)
+
+```ini
+[pytest]
+addopts = -q --maxfail=1 --disable-warnings --cov=app --cov-report=term-missing --cov-fail-under=61
+asyncio_mode = auto
+python_files = tests/test_*.py
 ```
+
+Resultados esperados:
+
+```
+36 passed, 0 failed
+---------- coverage ----------
+TOTAL  > 90%
+```
+
 
 ---
 
@@ -139,12 +156,16 @@ Resultado esperado:
 
 ## 🧱 Arquitectura
 
-El backend sigue una arquitectura modular:
+El backend sigue una arquitectura **modular y en capas**:
 
-- **API Layer** → Define rutas y dependencias (`FastAPI Routers`)
-- **Service Layer** → Lógica de negocio independiente del framework
-- **Schema Layer** → Validación y tipado (`Pydantic Models`)
-- **Persistence Layer** → MongoDB (colecciones: usuarios, agentes, solicitudes, kyc, historial_estados)
+| Capa | Descripción |
+|------|--------------|
+| **API Layer** | Define rutas y controladores (`FastAPI Routers`) |
+| **Service Layer** | Lógica de negocio independiente del framework |
+| **Schema Layer** | Validación y tipado (`Pydantic Models`) |
+| **Core Layer** | Configuración, seguridad y conexión a MongoDB |
+| **Persistence** | Colecciones: `usuarios`, `agentes`, `solicitudes_cdt`, `historial_estados` |
+
 
 ---
 
@@ -155,8 +176,17 @@ El backend sigue una arquitectura modular:
 | Iniciar servidor local | `uvicorn app.main:app --reload` |
 | Ejecutar pruebas | `pytest -v` |
 | Instalar dependencias | `pip install -r requirements.txt` |
-| Formatear código | `black .` |
-| Revisar tipado | `mypy app` |
+
+---
+
+## 🔒 Atributos de calidad garantizados
+
+| Atributo | Escenario | Métrica |
+|-----------|------------|---------|
+| **Seguridad** | Bloqueo tras 5 intentos fallidos | ≤ 1 min |
+| **Disponibilidad** | Conmutación automática DB | ≤ 5 s |
+| **Usabilidad** | Formulario con validaciones en tiempo real | Éxito > 95% |
+| **Rendimiento** | Login y CRUD | Login < 1 s, CRUD < 2 s |
 
 ---
 

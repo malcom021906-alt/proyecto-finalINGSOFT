@@ -23,6 +23,7 @@ class TokenData(BaseModel):
 class UsuarioPublico(BaseModel):
     id: str
     nombre: str
+    rol: str
     correo: EmailStr
     telefono: Optional[str] = None
     activo: bool

@@ -1,5 +1,6 @@
 // src/components/SolicitudesTable.jsx s
 import React from "react";
+import "../css/table.css"
 
 export default function SolicitudesTable({ items, onEdit, onChangeState }) {
   const formatMonto = (monto) => {
@@ -122,7 +123,7 @@ export default function SolicitudesTable({ items, onEdit, onChangeState }) {
                     
                     {acciones.puedeEnviar && (
                       <button
-                        onClick={() => onChangeState(item.id, "En validación")}
+                        onClick={() => onChangeState(item.id, "en_validacion")}
                         className="btn-action btn-send"
                         title="Enviar a validación"
                         style={{

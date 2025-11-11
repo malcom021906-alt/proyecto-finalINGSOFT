@@ -1,33 +1,35 @@
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { vi } from "vitest";
 import SolicitudesTable from "../components/SolicitudesTable";
 
 describe("SolicitudesTable Component", () => {
   const mockOnEdit = vi.fn();
   const mockOnChangeState = vi.fn();
-  const mockOnDelete = vi.fn();
 
   const mockItems = [
     {
-      id: 1,
+      id: "abc123def456",
       monto: 5000000,
-      plazo: "6 meses",
+      plazo_meses: 6,
+      tasa: 5.5,
       estado: "Borrador",
       fechaCreacion: "2025-10-17T12:00:00Z",
     },
     {
-      id: 2,
+      id: "xyz789ghi012",
       monto: 10000000,
-      plazo: "12 meses",
+      plazo_meses: 12,
+      tasa: 6.0,
       estado: "En validación",
       fechaCreacion: "2025-10-16T15:00:00Z",
     },
     {
-      id: 3,
+      id: "qwe345rty678",
       monto: 2000000,
-      plazo: "3 meses",
+      plazo_meses: 3,
+      tasa: 4.5,
       estado: "Aprobada",
-      fechaCreacion: null,
+      fechaCreacion: "2025-10-15T10:00:00Z",
     },
   ];
 
@@ -36,85 +38,128 @@ describe("SolicitudesTable Component", () => {
   });
 
   // 🧪 TEST 1 — Renderiza correctamente encabezados y filas
-  test("renderiza correctamente la tabla con encabezados y solicitudes", () => {
+  it("renderiza correctamente la tabla con encabezados y solicitudes", () => {
     render(
       <SolicitudesTable
         items={mockItems}
         onEdit={mockOnEdit}
         onChangeState={mockOnChangeState}
-        onDelete={mockOnDelete}
       />
     );
 
     // Encabezados principales
     expect(screen.getByText("ID")).toBeInTheDocument();
-    expect(screen.getByText("Monto")).toBeInTheDocument();
-    expect(screen.getByText("Acciones")).toBeInTheDocument();
+    expect(screen.getByText("MONTO")).toBeInTheDocument();
+    expect(screen.getByText("PLAZO")).toBeInTheDocument();
+    expect(screen.getByText("ESTADO")).toBeInTheDocument();
+    expect(screen.getByText("ACCIONES")).toBeInTheDocument();
 
-    // Contenido de las filas
-    expect(screen.getByText("6 meses")).toBeInTheDocument();
+    // Contenido de las filas - buscar números y texto por separado
+    expect(screen.getByText("6")).toBeInTheDocument();
+    expect(screen.getByText("12")).toBeInTheDocument();
+    expect(screen.getAllByText(/meses/i).length).toBeGreaterThan(0);
+    expect(screen.getByText("Borrador")).toBeInTheDocument();
     expect(screen.getByText("En validación")).toBeInTheDocument();
     expect(screen.getByText("Aprobada")).toBeInTheDocument();
   });
 
-  // 🧪 TEST 2 — Muestra mensaje si no hay solicitudes
-  test("muestra mensaje cuando no hay solicitudes", () => {
-    render(<SolicitudesTable items={[]} />);
-    expect(screen.getByText(/No hay solicitudes para mostrar/i)).toBeInTheDocument();
+  // 🧪 TEST 2 — No renderiza nada si no hay solicitudes
+  it("no renderiza la tabla cuando no hay solicitudes", () => {
+    const { container } = render(<SolicitudesTable items={[]} />);
+    expect(container.querySelector('.table-container')).not.toBeInTheDocument();
   });
 
   // 🧪 TEST 3 — Ejecuta onEdit solo si el estado es Borrador
-  test("ejecuta onEdit al hacer clic en Editar si el estado es 'Borrador'", () => {
+  it("ejecuta onEdit al hacer clic en Editar si el estado es 'Borrador'", () => {
     render(
       <SolicitudesTable
         items={mockItems}
         onEdit={mockOnEdit}
         onChangeState={mockOnChangeState}
-        onDelete={mockOnDelete}
       />
     );
 
-    const editButtons = screen.getAllByRole("button", { name: /Editar/i });
-    fireEvent.click(editButtons[0]); // primera fila = Borrador
+    const editButton = screen.getByRole("button", { name: /Editar/i });
+    fireEvent.click(editButton);
 
-    expect(mockOnEdit).toHaveBeenCalledWith(1);
-    expect(editButtons[1]).toBeDisabled(); // segunda fila no editable
+    expect(mockOnEdit).toHaveBeenCalledWith("abc123def456");
   });
 
-  // 🧪 TEST 4 — Ejecuta onChangeState sólo si está "En validación"
-  test("ejecuta onChangeState al hacer clic en Cancelar si el estado es 'En validación'", () => {
+  // 🧪 TEST 4 — Solo muestra botón Editar para estado Borrador
+  it("solo muestra el botón Editar para solicitudes en estado Borrador", () => {
     render(
       <SolicitudesTable
         items={mockItems}
         onEdit={mockOnEdit}
         onChangeState={mockOnChangeState}
-        onDelete={mockOnDelete}
       />
     );
 
+    // Solo debe haber 1 botón de Editar (para el estado Borrador)
+    const editButtons = screen.queryAllByRole("button", { name: /Editar/i });
+    expect(editButtons).toHaveLength(1);
+  });
+
+  // 🧪 TEST 5 — Ejecuta onChangeState para Enviar (Borrador → En validación)
+  it("ejecuta onChangeState al hacer clic en Enviar desde estado Borrador", () => {
+    render(
+      <SolicitudesTable
+        items={mockItems}
+        onEdit={mockOnEdit}
+        onChangeState={mockOnChangeState}
+      />
+    );
+
+    const enviarButton = screen.getByRole("button", { name: /Enviar/i });
+    fireEvent.click(enviarButton);
+
+    expect(mockOnChangeState).toHaveBeenCalledWith("abc123def456", "en_validacion");
+  });
+
+  // 🧪 TEST 6 — Ejecuta onChangeState para Cancelar
+  it("ejecuta onChangeState al hacer clic en Cancelar", () => {
+    render(
+      <SolicitudesTable
+        items={mockItems}
+        onEdit={mockOnEdit}
+        onChangeState={mockOnChangeState}
+      />
+    );
+
+    // Hay 2 botones Cancelar (Borrador y En validación)
     const cancelButtons = screen.getAllByRole("button", { name: /Cancelar/i });
+    expect(cancelButtons).toHaveLength(2);
 
-    // Primera fila (Borrador) no puede cancelar
-    expect(cancelButtons[0]).toBeDisabled();
-
-    // Segunda fila (En validación) sí puede cancelar
-    fireEvent.click(cancelButtons[1]);
-    expect(mockOnChangeState).toHaveBeenCalledWith(2, "Cancelada");
+    // Click en el primero (Borrador)
+    fireEvent.click(cancelButtons[0]);
+    expect(mockOnChangeState).toHaveBeenCalledWith("abc123def456", "Cancelada");
   });
 
-  // 🧪 TEST 5 — Ejecuta onDelete en cualquier solicitud
-  test("ejecuta onDelete al hacer clic en Eliminar", () => {
+  // 🧪 TEST 7 — Formatea correctamente el monto
+  it("formatea correctamente el monto en formato de moneda colombiana", () => {
     render(
       <SolicitudesTable
         items={mockItems}
         onEdit={mockOnEdit}
         onChangeState={mockOnChangeState}
-        onDelete={mockOnDelete}
       />
     );
 
-    const deleteButtons = screen.getAllByRole("button", { name: /Eliminar/i });
-    fireEvent.click(deleteButtons[0]);
-    expect(mockOnDelete).toHaveBeenCalledWith(1);
+    // Buscar montos formateados (COP usa puntos como separador de miles)
+    expect(screen.getByText(/\$\s*5\.000\.000/)).toBeInTheDocument();
+  });
+
+  // 🧪 TEST 8 — Muestra la tasa correctamente
+  it("muestra la tasa de interés cuando está disponible", () => {
+    render(
+      <SolicitudesTable
+        items={mockItems}
+        onEdit={mockOnEdit}
+        onChangeState={mockOnChangeState}
+      />
+    );
+
+    expect(screen.getByText("5.5%")).toBeInTheDocument();
+    expect(screen.getByText("6%")).toBeInTheDocument();
   });
 });

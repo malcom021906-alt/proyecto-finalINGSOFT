@@ -65,7 +65,7 @@ async def me(authorization: str = Header(...), db: AsyncIOMotorDatabase = Depend
     except JWTError:
         raise HTTPException(status_code=401, detail="Token inválido")
 
-    user = await db["usuarios"].find_one({"_id": ObjectId(user_id)}) or await db["agentes"].find_one({"_id": ObjectId(user_id)})
+    user = await db["usuarios"].find_one({"_id": ObjectId(user_id)}) or await db["agentes"].find_one({"_id": ObjectId(user_id)}, {"_id": 1, "nombre": 1, "correo": 1, "activo": 1, "rol": 1})
     if not user:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
     return serialize_user(user)
