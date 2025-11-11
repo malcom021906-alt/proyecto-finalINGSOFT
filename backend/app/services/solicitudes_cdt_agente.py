@@ -9,7 +9,9 @@ from app.schemas.solicitudes_cdt_agente import RechazoRequest
 
 # --- Listar todas las solicitudes pendientes de validación ---
 async def listar_pendientes(db: AsyncIOMotorDatabase) -> List[dict]:
-    cursor = db["solicitudes_cdt"].find({"estado": "en_validacion"})
+    cursor = db["solicitudes_cdt"].find({
+        "estado": {"$in": ["en_validacion", "aprobada", "rechazada"]}
+    })
     solicitudes = []
     async for doc in cursor:
         doc["id"] = str(doc["_id"])

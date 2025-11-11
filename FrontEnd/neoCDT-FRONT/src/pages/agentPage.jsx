@@ -36,7 +36,7 @@ function FilterBar({ initial = {}, onApply = () => {}, isAgentView = false }) {
         <option value="">Todos los estados</option>
         {isAgentView ? (
           <>
-            <option value="en_validacion">En validación</option>
+            <option value="En validación">En validación</option>
             <option value="Aprobada">Aprobada</option>
             <option value="Rechazada">Rechazada</option>
           </>
@@ -462,7 +462,7 @@ export default function AgenteDashboard() {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
-  const [filtros, setFiltros] = useState({ estado: "" });
+  const [filtros, setFiltros] = useState({});
   const [loading, setLoading] = useState(false);
 
   // Estados para modales
@@ -697,18 +697,6 @@ export default function AgenteDashboard() {
           <div className="nav-item active">
             <span className="nav-icon">🏦</span>
             <span>Solicitudes Pendientes</span>
-          </div>
-          <div className="nav-item">
-            <span className="nav-icon">✅</span>
-            <span>Aprobadas</span>
-          </div>
-          <div className="nav-item">
-            <span className="nav-icon">❌</span>
-            <span>Rechazadas</span>
-          </div>
-          <div className="nav-item">
-            <span className="nav-icon">⚙️</span>
-            <span>Configuración</span>
           </div>
           <button className="logout-btn" onClick={handleLogout}>
             🚪 Cerrar Sesión
