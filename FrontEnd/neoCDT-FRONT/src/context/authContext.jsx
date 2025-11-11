@@ -28,6 +28,9 @@ export function AuthProvider({ children }) {
   const login = async (email, password) => {
   try {
     const me = await loginRequest(email, password);
+    const yo = await meRequest();
+    console.log("🧩 Usuario cargado desde /auth/me:", yo);
+    setUser(me);
     setUser(me);
     setError(null);
     return me; // importante: devolvemos el usuario con rol

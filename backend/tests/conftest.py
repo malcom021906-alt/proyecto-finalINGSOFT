@@ -58,9 +58,37 @@ class FakeCollection:
                 return all(cond(k, v, doc) for k, v in q2.items())
             return False
         return all(cond(k, v, doc) for k, v in query.items())
-    async def find_one(self, query):
+    async def find_one(self, query, projection=None):
+        def _apply_projection(doc, proj):
+            if not proj:
+                return doc
+            # Soporta inclusión (campos con 1) y exclusión simple (campos con 0)
+            include = {k for k, v in proj.items() if v}
+            exclude = {k for k, v in proj.items() if not v}
+
+            if include and exclude:
+                # Manténlo simple: prioriza inclusión si existe
+                exclude = set()
+
+            if include:
+                out = {k: v for k, v in doc.items() if k in include}
+                # _id se incluye por defecto si no se excluye explícitamente
+                if "_id" not in include and proj.get("_id", 1):
+                    out["_id"] = doc.get("_id")
+                return out
+
+            if exclude:
+                out = {k: v for k, v in doc.items() if k not in exclude}
+                # si excluyen _id, respeta
+                if proj.get("_id", 1) == 0 and "_id" in out:
+                    out.pop("_id", None)
+                return out
+
+            return doc
+
         for doc in self.data.values():
-            if self._match(doc, query): return doc
+            if self._match(doc, query):
+                return _apply_projection(doc, projection)
         return None
     async def insert_one(self, doc):
         _id = ObjectId()
