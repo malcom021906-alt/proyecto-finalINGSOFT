@@ -24,7 +24,7 @@ export default function FilterBar({ initial = {}, onApply }) {
       <select value={estado} onChange={(e) => setEstado(e.target.value)}>
         <option value="">Todos los estados</option>
         <option value="Borrador">Borrador</option>
-        <option value="En validación">En validación</option>
+        <option value="en_validacion">En validación</option>
         <option value="Aprobada">Aprobada</option>
         <option value="Rechazada">Rechazada</option>
         <option value="Cancelada">Cancelada</option>

@@ -12,19 +12,29 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [localError, setLocalError] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLocalError("");
-    setLoading(true);
-    try {
-      await login(email, password);
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLocalError("");
+  setLoading(true);
+  try {
+    const me = await login(email, password);
+    if (me?.rol === "administrador") {
+      navigate("/agente");
+    } else {
       navigate("/solicitudes");
-    } catch (err) {
-      setLocalError(contextError || err?.message || "Credenciales inválidas. Verifica tu correo y contraseña.");
-    } finally {
-      setLoading(false);
     }
-  };
+  } catch (err) {
+  console.error("Error en el login:", err); // ✅ registrar el error
+  setLocalError(
+    err?.message || "Credenciales inválidas. Verifica tu correo y contraseña."
+  );
+} finally {
+  setLoading(false);
+}
+};
+
+
+
 
   return (
     <div className="login-container">

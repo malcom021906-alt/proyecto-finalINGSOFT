@@ -5,7 +5,7 @@ import FilterBar from "../components/FilterBar";
 import SolicitudesTable from "../components/SolicitudesTable";
 import SolicitudForm from "../components/SolicitudForm";
 import Modal from "../components/Modal";
-import "../css/solicitudesPage.css"
+import "../css/solicitudesPage.css";
 
 export default function SolicitudesPage() {
   const navigate = useNavigate();
@@ -154,36 +154,24 @@ export default function SolicitudesPage() {
             <span>BANKING</span>
           </div>
         </div>
-        
+
         <nav className="sidebar-nav">
           <div className="nav-item active">
             <span className="nav-icon">🏠</span>
             <span>Home</span>
           </div>
-          <div className="nav-item">
-            <span className="nav-icon">🔄</span>
-            <span>Transactions</span>
-          </div>
-          <div className="nav-item">
-            <span className="nav-icon">📊</span>
-            <span>Investments</span>
-          </div>
-          <div className="nav-item">
-            <span className="nav-icon">⚙️</span>
-            <span>Settings</span>
-          </div>
+
+          {/* 🔴 Botón de cerrar sesión movido aquí */}
+          <button className="logout-btn" onClick={handleLogout}>
+            🚪 Cerrar Sesión
+          </button>
         </nav>
       </div>
 
       <div className="page-card">
         <div className="content-inner">
           {/* Header */}
-           <div className="header-container">
           <h2 className="page-header">MIS SOLICITUDES CDT</h2>
-          <button className="logout-btn" onClick={handleLogout}>
-            Cerrar Sesión
-          </button>
-        </div>
 
           {/* Botón Nueva Solicitud */}
           <button
