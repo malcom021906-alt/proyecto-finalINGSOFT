@@ -22,15 +22,15 @@ export default function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/agente" element={<AgenteDashboard />} />
+      <Route path="/solicitudes" element={<SolicitudesPage />} />
+
+
 
 
       {/* Rutas privadas */}
       <Route element={<ProtectedRoute />}>
         <Route path="/solicitudes" element={<SolicitudesPage />} />
-      </Route>
-
-      {/* Rutas privadas: solo agente */}
-      <Route element={<ProtectedRoute allowedRoles={["administrador"]} />}>
         <Route path="/agente" element={<AgenteDashboard />} />
       </Route>
 
