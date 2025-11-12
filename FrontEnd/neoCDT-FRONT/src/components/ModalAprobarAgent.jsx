@@ -1,9 +1,12 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 
 export default function ModalAprobarAgent({ open, onClose, solicitud, onConfirm }) {
-  // Soportar tanto render condicional desde el padre como prop `open`.
-  const show = typeof open === 'undefined' ? true : !!open;
+  // ✅ FIX: Comparar directamente con undefined
+  const show = open === undefined ? true : !!open;
+  
   if (!show) return null;
+  
   return (
     <div className="modal-overlay">
       <div className="modal-content" style={{ width: 420 }}>

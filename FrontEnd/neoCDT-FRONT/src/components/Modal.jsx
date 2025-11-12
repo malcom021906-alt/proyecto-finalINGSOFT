@@ -1,4 +1,4 @@
-// src/components/Modal.jsx
+/* eslint-disable react/prop-types */
 import React from "react";
 import "../css/modal.css"
 

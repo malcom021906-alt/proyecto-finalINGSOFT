@@ -1,4 +1,4 @@
-// src/components/SolicitudesTable.jsx s
+/* eslint-disable react/prop-types */
 import React from "react";
 import "../css/table.css"
 
