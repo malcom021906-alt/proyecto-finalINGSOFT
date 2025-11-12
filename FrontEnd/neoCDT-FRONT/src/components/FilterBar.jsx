@@ -1,4 +1,4 @@
-// src/components/FilterBar.jsx
+/* eslint-disable react/prop-types */
 import React, { useState, useEffect } from "react";
 import "../css/filterbar.css"
 

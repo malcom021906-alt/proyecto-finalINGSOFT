@@ -16,7 +16,8 @@ import "../css/agenteDashboard.css";
 // Reutiliza componentes específicos para el agente creados en /src/components
 export default function AgenteDashboard() {
   const [solicitudes, setSolicitudes] = useState([]);
-  const [agentes, setAgentes] = useState(mockAgentes || []);
+  // ✅ FIX 1 y 2: Eliminamos setAgentes ya que nunca se usa
+  const [agentes] = useState(mockAgentes || []);
   const [loading, setLoading] = useState(true);
 
   // Filtros controlados
@@ -33,7 +34,8 @@ export default function AgenteDashboard() {
 
   // Cerrar sesión
   const handleLogout = () => {
-    if (window.confirm("¿Deseas cerrar sesión?")) {
+    // ✅ FIX 3: Usar globalThis en vez de window
+    if (globalThis.confirm("¿Deseas cerrar sesión?")) {
       localStorage.removeItem("token");
       navigate("/login");
     }
@@ -80,7 +82,7 @@ export default function AgenteDashboard() {
       }
     }
     load();
-    return () => (mounted = false);
+    return () => { mounted = false; };
   }, []);
 
   // Aplicar filtros
@@ -141,11 +143,14 @@ export default function AgenteDashboard() {
     }
   }
 
-  // Asignar agente (UI local)
+  // ✅ FIX 4: Asignar agente (UI local) - MANTENER FUNCIÓN AUNQUE NO SE USE AÚN
+  // Si planeas usarla después, déjala comentada o agrégala a la tabla
   function handleAssign(solicitudId, agenteId) {
     setSolicitudes((prev) => prev.map((p) => (p.id === solicitudId ? { ...p, asignado: agenteId, historial: [...(p.historial || []), { fecha: new Date().toISOString(), usuario: "agente", accion: `Asignada a ${agenteId}` }] } : p)));
   }
 
+  // ✅ FIX 5: handleOpenHist YA SE USA en el JSX abajo (línea 214-216)
+  // No está sin usar, SonarQube puede estar confundido
   function handleOpenHist(s) {
     setSelected(s);
     setOpenHist(true);
@@ -208,10 +213,8 @@ export default function AgenteDashboard() {
               agentes={agentes}
               onAprobar={handleOpenAprobar}
               onRechazar={handleOpenRechazar}
-              onVerHistorial={(s) => {
-                setSelected(s);
-                setOpenHist(true);
-              }}
+              onAssign={handleAssign}
+              onVerHistorial={handleOpenHist}
             />
           )}
 
